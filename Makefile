@@ -6,8 +6,6 @@ LIBS =		`pkg-config opencv --libs`
 
 TARGET =	OpticalFlow
 
-CXX = 		arm-angstrom-linux-gnueabi-g++
-
 $(TARGET):	$(OBJS)
 	$(CXX) -o $(TARGET) $(CXXFLAGS) $(OBJS) $(LIBS)
 
