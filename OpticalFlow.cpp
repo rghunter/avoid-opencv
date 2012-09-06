@@ -46,7 +46,7 @@ int main(void)
 	ofstream data_log0, data_log1;
 	data_log0.setf(ios::floatfield);
 	data_log0.precision(5);
-	data_log0.open("./hitMissEval.csv");
+	data_log0.open("/root/hitMissEval.csv");
 
 	vector<vector<char> > MASK;
 
