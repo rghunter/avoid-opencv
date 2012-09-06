@@ -42,7 +42,7 @@ int main(void)
 	Mat output_frame;
 	//vector<vector<DMatch> > matches;
 	vector<DMatch> matches;
-	bool first = true;
+	int first = 10;
 	ofstream data_log0, data_log1;
 	data_log0.setf(ios::floatfield);
 	data_log0.precision(5);
@@ -66,12 +66,16 @@ int main(void)
 		{
 			//raw_frame = input.clone();
 			cvtColor(input,raw_frame,CV_BGR2GRAY);
-			if(first)
+			if(first > 0){
+				first--;
+				continue;
+			}
+			if(first == 0)
 			{
 				fixed_image = raw_frame.clone();
 				detector.detect(raw_frame,keypoint_fixed);
 				extractor.compute(raw_frame,keypoint_fixed,fixed_descriptor);
-				first = false;
+				first = -1;
 				continue;
 			}
 
