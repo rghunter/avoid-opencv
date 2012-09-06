@@ -119,7 +119,7 @@ int main(void)
 
 
 		//	cout << "Average Distance: " << (float)(sum/len) << endl;
-			cout << endl;
+		//	cout << endl;
 
 			//drawMatches(fixed_image,keypoint_fixed,raw_frame,keypoint,matches,output_frame,Scalar::all(-1),Scalar::all(-1),MASK);
 			//imshow("output",output_frame);
