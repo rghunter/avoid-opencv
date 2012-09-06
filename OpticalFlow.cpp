@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <fstream>
 
-#define ACC_ERROR 2
+#define ACC_ERROR 4
 
 using namespace cv;
 using namespace std;
