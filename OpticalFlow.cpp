@@ -58,6 +58,8 @@ int main(void)
 	//double frame_count = video.get(CV_CAP_PROP_FRAME_COUNT);
 	int current_count = 0;
 
+	cout << "Begin.... Please Wait..." << endl;
+
 	while((current_count < 100)) //|| (frame_count - video.get(CV_CAP_PROP_POS_FRAMES)) > 1)
 	{
 		video >> input;
