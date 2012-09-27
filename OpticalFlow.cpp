@@ -6,128 +6,91 @@
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
+#include "ObstacleDetector.h"
 
-#define ACC_ERROR 4
+#define ACC_EUCLID 60
 
 using namespace cv;
 using namespace std;
 
-Mat outgoing_frame, frame_gray, save_image, fixed_image;
-Mat frame_corrected;
-Mat fixed_descriptor;
-vector<KeyPoint> keypoint_fixed;
+Mat raw_frame, grayscale_frame, initial_image, output_frame;
+vector<KeyPoint> keypoints_train, keypoints_query;
+vector<DMatch> matches;
 
-float distance(KeyPoint *pt1, KeyPoint *pt2)
+float euclid_distance(KeyPoint pt1, KeyPoint pt2)
 {
-	//float x = pow(pt1->x,2);
-	//float y = pt1->y;
-	//return x+y;
-	return sqrt(pow(((float)pt1->pt.x - pt2->pt.x),2)+pow((pt1->pt.y - pt2->pt.y),2));
+	return (float)sqrt(pow((double)(pt1.pt.x - pt2.pt.x),2)+pow((double)(pt1.pt.y - pt2.pt.y),2));
 }
-
 
 int main(void)
 {
-	//VideoCapture video("./static.mp4");
-	VideoCapture video(0);
+	ObstacleDetector detector(3000,4,60,"./calib.xml");
 
+	VideoCapture video("./2.avi");
+	//video.set(CV_CAP_PROP_FRAME_WIDTH,300);
+	//video.set(CV_CAP_PROP_FRAME_HEIGHT,300);
+	//VideoCapture video(0);
+	if(!video.isOpened()){
+		cout << "ERROR: Could not open file." << endl;
+		return 1;
+	}
 
-	SurfFeatureDetector detector(4000,1);
-	FREAK extractor(true,true,70,1);
-	BruteForceMatcher <Hamming> matcher;
-	vector<KeyPoint> keypoint;
-	Mat descriptor;
-	Mat raw_frame;
-	Mat input;
-	Mat output_frame;
-	//vector<vector<DMatch> > matches;
-	vector<DMatch> matches;
-	int first = 10;
 	ofstream data_log0, data_log1;
 	data_log0.setf(ios::floatfield);
-	data_log0.precision(5);
-	data_log0.open("/root/hitMissEval.csv");
-
-	vector<vector<char> > MASK;
-
-	//MASK.zeros(100,100,CV_8U);
-	//MASK.col(1) = 1;
-
+	data_log0.precision(2);
+	data_log0.open("./hitMissEval.csv");
 	data_log0 << "Hit, Miss, Total" << endl;
 
-	//double frame_count = video.get(CV_CAP_PROP_FRAME_COUNT);
+	bool first = true;
+	double frame_count = video.get(CV_CAP_PROP_FRAME_COUNT);
+	if(frame_count == 0)
+		frame_count = 3000;
 	int current_count = 0;
 
+	cout << "Number of frames: " << frame_count <<endl;
 	cout << "Begin.... Please Wait..." << endl;
 
-	while((current_count < 100)) //|| (frame_count - video.get(CV_CAP_PROP_POS_FRAMES)) > 1)
+	while((frame_count - video.get(CV_CAP_PROP_POS_FRAMES) > 1))
 	{
-		video >> input;
+		video >> raw_frame;
 		current_count += 1;
-		if(true)
+		if(current_count > 30)
 		{
-			//raw_frame = input.clone();
-			cvtColor(input,raw_frame,CV_BGR2GRAY);
-			if(first > 0){
-				first--;
-				continue;
-			}
-			if(first == 0)
-			{
-				fixed_image = raw_frame.clone();
-				detector.detect(raw_frame,keypoint_fixed);
-				extractor.compute(raw_frame,keypoint_fixed,fixed_descriptor);
-				first = -1;
-				continue;
-			}
+			cvtColor(raw_frame,grayscale_frame,CV_BGR2GRAY);
 
-			detector.detect(raw_frame,keypoint);
-			extractor.compute(raw_frame,keypoint,descriptor);
-			matcher.match(descriptor,fixed_descriptor,matches);
-		//	matcher.radiusMatch(descriptor, fixed_descriptor,matches,1,Mat(),true);
-			float sum = 0;
-			float len = 0;
-			vector<char> MASK;
+			detector.matchFrame(grayscale_frame);
+			detector.getMatches(&matches);
+			detector.getQueryPoints(&keypoints_query);
+			detector.getTrainPoints(&keypoints_train);
+			vector<char> MASK_G,MASK_B;
 			float correct, incorrect;
 			correct = 0;
 			incorrect = 0;
 			for(uint i=0;i<matches.size();i++)
 			{
+				KeyPoint pt1 = keypoints_train[matches[i].queryIdx];
+				KeyPoint pt2 = keypoints_query[matches[i].trainIdx];
 
-				KeyPoint pt1 = keypoint_fixed[matches[i].trainIdx];
-				KeyPoint pt2 = keypoint[matches[i].queryIdx];
+				float euclidian_distance = euclid_distance(pt1,pt2);
 
-				float euclidian_distance = distance(&keypoint_fixed[matches[i].trainIdx],&keypoint[matches[i].queryIdx]);
-				cout << euclidian_distance << "\t";
-
-				if(euclidian_distance < ACC_ERROR)
+				if(euclidian_distance < ACC_EUCLID){
+					MASK_G.push_back(1);
+					MASK_B.push_back(0);
 					correct += 1;
-				else
+				}else{
+					MASK_G.push_back(0);
+					MASK_B.push_back(1);
 					incorrect += 1;
-#if 0
-				if(matches[i].distance > 5)
-					MASK.push_back(0);
-				else
-				{
-					len += 1;
-					sum += distance(&keypoint_fixed[matches[i].trainIdx],&keypoint[matches[i].queryIdx]);
-					//cout << " " << distance(&keypoint_fixed[matches[i].trainIdx],&keypoint[matches[i].queryIdx]) << " ";
-					MASK.push_back(1);
 				}
-#endif
 			}
 
-			data_log0 << correct << ", " << incorrect << ", " << matches.size() <<  ", " << keypoint_fixed.size()<< endl;
+			data_log0 << correct << ", " << incorrect << ", " << matches.size() <<  ", " << keypoints_train.size()<< endl;
 
-
-		//	cout << "Average Distance: " << (float)(sum/len) << endl;
-		//	cout << endl;
-
-			//drawMatches(fixed_image,keypoint_fixed,raw_frame,keypoint,matches,output_frame,Scalar::all(-1),Scalar::all(-1),MASK);
-			//imshow("output",output_frame);
-			//cout << "Num Points: " << keypoint.size() << " Num Matches: " << matches.size() << endl;
+			drawMatches(detector.initial_frame,keypoints_train,grayscale_frame,keypoints_query,matches,output_frame,Scalar(0,255,0),Scalar(0,0,255),MASK_G,DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+			drawMatches(detector.initial_frame,keypoints_train,grayscale_frame,keypoints_query,matches,output_frame,Scalar(0,0,255),Scalar(255,0,0),MASK_B,(DrawMatchesFlags::DRAW_OVER_OUTIMG | DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS));
+			imshow("output",output_frame);
 		}
-		//waitKey(1);
+		waitKey(10);
 	}
 	cout << "Done!" << endl;
 	data_log0.close();
