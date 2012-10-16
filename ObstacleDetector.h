@@ -16,6 +16,9 @@
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
+#include <sys/time.h>
+#include <unistd.h>
+#include "Tau.h"
 
 using namespace std;
 
@@ -25,36 +28,47 @@ using namespace std;
 
 #define GRID_SIZE				10
 
-#define ACC_HAMMING				5
+#define ACC_HAMMING				1
 
 class ObstacleDetector {
 public:
-	ObstacleDetector(double hessian_threshold, int octaves, float pattern_size, const char *camera_calibration = "./calib.xml");
+	vector<cv::KeyPoint> keypoint_train, keypoint_query,keypoint_train_adjusted,keypoint_query_adjusted;
+	vector<cv::DMatch> matches;
+	cv::Mat undistorted_frame;
+
+	ObstacleDetector(double hessian_threshold, int octaves, float pattern_size,
+			const char *camera_calibration, int height, int width);
 	virtual ~ObstacleDetector();
-	void getTrainPoints(vector<cv::KeyPoint> *train_points);
-	void getQueryPoints(vector<cv::KeyPoint> *query_points);
-	void getMatches(vector<cv::DMatch> *inMatch);
 	void matchFrame(cv::Mat input_image);
 	void initialFrame(cv::Mat input_image, vector<cv::KeyPoint> detected_keypoints, cv::Mat descriptors);
 	cv::Mat initial_frame;
+	const cv::Rect *roi_rec;
+
+	vector<OpticalQuad::Tau> tauVals;
 
 private:
-	cv::SurfFeatureDetector *detector;
-	cv::GridAdaptedFeatureDetector *grid_detector;
+	cv::FastFeatureDetector *FAST_Detector;
 	cv::FREAK *extractor;
 	cv::BruteForceMatcher <cv::Hamming> matcher;
-	vector<cv::KeyPoint> keypoint_train, keypoint_query;
-	vector<cv::DMatch> matches;
+	cv::KeyPoint nodal_pt;
 	cv::Mat descriptor_query, descriptor_train;
-	cv::Mat undistorted_frame;
+
 	cv::Mat camera_matrix, distortion_coeffs;
 
-	vector<char> matchRate;
+	float time_elapsed(timespec start, timespec end);
 
-	bool undistortImage, refresh;
+	ofstream data_log2, tau_log;
+	cv::Mat roi_subframe;
+
+	timespec frame_last,frame_current;
+
+	int frame_count;
+
+	bool undistortImage;
 
 	float euclid_distance(cv::KeyPoint pt1, cv::KeyPoint pt2);
 	void undistort(cv::Mat raw_frame);
+
 };
 
 #endif /* OBSTICALDETECTOR_H_ */

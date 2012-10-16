@@ -3,7 +3,6 @@
 	<name>OpticalFlowCV</name>
 	<comment></comment>
 	<projects>
-		<project>briskProject-Release@build</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

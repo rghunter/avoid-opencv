@@ -7,27 +7,31 @@
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.linuxtools.cdt.autotools.core.buildArtefactType.autotools" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.linuxtools.cdt.autotools.core.buildArtefactType.autotools" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.590069678" name="Build (GNU)" parent="org.eclipse.linuxtools.cdt.autotools.core.configuration.build">
 					<folderInfo id="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.590069678." name="/" resourcePath="">
-						<toolChain id="org.eclipse.linuxtools.cdt.autotools.core.toolChain.1302997935" name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolChain">
+						<toolChain id="org.eclipse.linuxtools.cdt.autotools.core.toolChain.1302997935" name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolChain" unusedChildren="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen">
 							<targetPlatform id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform.372132355" isAbstract="false" name="GNU Autotools Target Platform" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform"/>
-							<builder id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1167926671" keepEnvironmentInBuildfile="false" managedBuildOn="true" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder"/>
-							<tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.714204985" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure">
-								<option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.599391589" name="Name" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.590069678" valueType="string"/>
-							</tool>
-							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.1377945330" name="autogen.sh" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen"/>
+							<builder id="cdt.managedbuild.builder.gnu.cross.1326599075" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.1581693963" name="GCC C Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc">
 								<option id="gnu.c.compiler.option.include.paths.1679433148" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1770241765" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.714204985" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure">
+								<option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.599391589" name="Name" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.590069678" valueType="string"/>
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.2092621273" name="GCC C++ Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp">
 								<option id="gnu.cpp.compiler.option.include.paths.774591040" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -39,9 +43,7 @@
 					</folderInfo>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
-				<externalSettings containerId="briskProject-Release@build;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier"/>
-			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
