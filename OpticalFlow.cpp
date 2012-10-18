@@ -89,7 +89,7 @@ int main(void)
 
 
 #if RECORD_VIDEO
-	VideoWriter recorder("./output.avi", CV_FOURCC('D','I','V','X'),7,Size(width*2,height*2),true);
+	VideoWriter recorder("./output.avi", CV_FOURCC('D','I','V','X'),4,Size(width*2,height*2),true);
 	if(!recorder.isOpened())
 	{
 		cout << "Could not open file for recording" << endl;
