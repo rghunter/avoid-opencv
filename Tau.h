@@ -16,9 +16,9 @@ namespace OpticalQuad {
 class Tau {
 public:
 	Tau();
-	Tau(cv::Point2f tau, cv::KeyPoint location);
+	Tau(float tau, cv::KeyPoint location);
 	virtual ~Tau();
-	cv::Point2f tau;
+	float tau;
 	cv::KeyPoint location;
 };
 

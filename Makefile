@@ -1,6 +1,6 @@
 CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags`
 
-OBJS =		OpticalFlow.o ObstacleDetector.o Tau.o 
+OBJS =		OpticalFlow.o ObstacleDetector.o Tau.o OMAP_SURF/SURF.o
 
 CFLAGS  = -O3 -g -Wall `pkg-config --cflags opencv` -D LINUX -fPIC
 

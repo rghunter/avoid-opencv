@@ -19,6 +19,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include "Tau.h"
+#include "OMAP_SURF/SURF.h"
 
 using namespace std;
 
@@ -28,12 +29,12 @@ using namespace std;
 
 #define GRID_SIZE				10
 
-#define ACC_HAMMING				1
+
 
 class ObstacleDetector {
 public:
-	vector<cv::KeyPoint> keypoint_train, keypoint_query,keypoint_train_adjusted,keypoint_query_adjusted;
-	vector<cv::DMatch> matches;
+	vector<cv::KeyPoint> keypoint_train, keypoint_query, keypoint_query_roi;
+	vector<cv::DMatch> matches, matchesUnfiltered;
 	cv::Mat undistorted_frame;
 
 	ObstacleDetector(double hessian_threshold, int octaves, float pattern_size,
@@ -48,6 +49,7 @@ public:
 
 private:
 	cv::FastFeatureDetector *FAST_Detector;
+	OpticalQuad::SURF *SURF_Detector;
 	cv::FREAK *extractor;
 	cv::BruteForceMatcher <cv::Hamming> matcher;
 	cv::KeyPoint nodal_pt;
@@ -66,7 +68,7 @@ private:
 
 	bool undistortImage;
 
-	float euclid_distance(cv::KeyPoint pt1, cv::KeyPoint pt2);
+	float euclid_distance(cv::Point2f pt1, cv::Point2f pt2);
 	void undistort(cv::Mat raw_frame);
 
 };

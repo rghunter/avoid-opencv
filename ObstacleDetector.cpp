@@ -7,20 +7,20 @@
 
 #include "ObstacleDetector.h"
 
-#define REFRESH_AFTER			1
+#define REFRESH_AFTER			0
+#define ACC_HAMMING				60
 
 
 
 ObstacleDetector::ObstacleDetector(double hessian_threshold, int octaves, float pattern_size, const char *camera_calibration, int height, int width)
 {
-	FAST_Detector = new cv::FastFeatureDetector(10,true);
-	extractor = new cv::FREAK(false,true,40,4);
-
-	frame_count = REFRESH_AFTER+1;
+	FAST_Detector = new cv::FastFeatureDetector(60,true);
+	SURF_Detector = new OpticalQuad::SURF(4,4,4,0.0007f);
+	extractor = new cv::FREAK(false,true,70,4);
 
 	roi_rec = new cv::Rect(0,height/3,width,height/3);
 
-	nodal_pt = cv::KeyPoint(width/2.0f,height/2.0f,0);
+	nodal_pt = cv::KeyPoint (width/2.0f,height/2.0f,0);
 
 	data_log2.open("./data/performance_data.csv");
 	tau_log.open("./data/tau_value.csv");
@@ -53,75 +53,83 @@ ObstacleDetector::~ObstacleDetector() {
 	delete(extractor);
 }
 
-float ObstacleDetector::euclid_distance(cv::KeyPoint pt1, cv::KeyPoint pt2)
+float ObstacleDetector::euclid_distance(cv::Point2f pt1, cv::Point2f pt2)
 {
-	return (float)sqrt(pow((double)(pt1.pt.x - pt2.pt.x),2)+pow((double)(pt1.pt.y - pt2.pt.y),2));
+	return (float)sqrt(pow((double)(pt1.x - pt2.x),2)+pow((double)(pt1.y - pt2.y),2));
 }
 void ObstacleDetector::matchFrame(cv::Mat input_image)
 {
 	timespec begin, end;
+
 	memcpy(&frame_last,&frame_current,sizeof(timespec));
-	keypoint_query.clear();
-	matches.clear();
-	keypoint_query_adjusted.clear();
-	tauVals.clear();
 	clock_gettime(CLOCK_MONOTONIC,&frame_current);
+
+	keypoint_query.clear();
+	keypoint_query_roi.clear();
+	matches.clear();
+
+
+
 	cv::Mat newImage;
-	clock_gettime(CLOCK_MONOTONIC,&begin);
+
 	cvtColor(input_image,newImage,CV_BGR2GRAY,1);
-	clock_gettime(CLOCK_MONOTONIC,&end);
-	data_log2 << time_elapsed(begin,end) << ",";
-	clock_gettime(CLOCK_MONOTONIC,&begin);
+
 	this->undistort(newImage);
-	clock_gettime(CLOCK_MONOTONIC,&end);
-	data_log2 << time_elapsed(begin,end) << ",";
-	clock_gettime(CLOCK_MONOTONIC,&begin);
-	FAST_Detector->detect(roi_subframe,keypoint_query);
-	clock_gettime(CLOCK_MONOTONIC,&end);
-	data_log2 << time_elapsed(begin,end) << ",";
-	clock_gettime(CLOCK_MONOTONIC,&begin);
-	extractor->compute(undistorted_frame,keypoint_query,descriptor_query);
-	clock_gettime(CLOCK_MONOTONIC,&end);
-	data_log2 << time_elapsed(begin,end) << ",";
-	clock_gettime(CLOCK_MONOTONIC,&begin);
-	if(keypoint_query.size() == 0)
-		return;
-	keypoint_query_adjusted.clear();
-	for(unsigned int i=0;i<keypoint_query.size();i++)
+
+	FAST_Detector->detect(roi_subframe,keypoint_query_roi);
+	//SURF_Detector->ExtractPoints(roi_subframe,keypoint_query_roi);
+
+
+
+	for(unsigned int i=0;i<keypoint_query_roi.size();i++)
 	{
-		cv::KeyPoint adjusted = keypoint_query[i];
+		cv::KeyPoint adjusted = keypoint_query_roi[i];
 		adjusted.pt.x += roi_rec->x;
 		adjusted.pt.y += roi_rec->y;
-		keypoint_query_adjusted.push_back(adjusted);
+		keypoint_query.push_back(adjusted);
 	}
+
+	if(keypoint_query.size() == 0)
+		return;
+
+	extractor->compute(undistorted_frame,keypoint_query,descriptor_query);
+
 	if(keypoint_train.size() == 0 || frame_count > REFRESH_AFTER)
 	{
-		this->initialFrame(roi_subframe,keypoint_query,descriptor_query);
+		this->initialFrame(undistorted_frame,keypoint_query,descriptor_query);
 		return;
 	}
+
 	frame_count++;
-	clock_gettime(CLOCK_MONOTONIC,&begin);
-	matcher.match(descriptor_train,descriptor_query,matches); //note: query and train are swapped on purpose
-	clock_gettime(CLOCK_MONOTONIC,&end);
-	data_log2 << time_elapsed(begin,end) << ",";
-	for(unsigned int i=0;i<matches.size();i++)
-		if(matches[i].distance > ACC_HAMMING)
-			matches.erase(matches.begin()+i);
+
+	matcher.match(descriptor_train,descriptor_query,matchesUnfiltered); //note: query and train are swapped on purpose
+
+#if 1
+	for(unsigned int i=0;i<matchesUnfiltered.size();i++)
+		if(matchesUnfiltered[i].distance < ACC_HAMMING)
+			matches.push_back(matchesUnfiltered[i]);
+#endif
+
+	tauVals.clear();
 
 	for(unsigned int i=0;i<matches.size();i++)
 	{
-		 cv::Point2f traverse = keypoint_query[matches[i].queryIdx].pt-keypoint_train[matches[i].trainIdx].pt;
-		 cv::Point2f nodal_dist = nodal_pt.pt-keypoint_query[matches[i].queryIdx].pt;
-		 float traverse_time = time_elapsed(frame_last,frame_current);
-		 float tauX = fabs(nodal_dist.x) / (traverse.x / traverse_time);
-		 float tauY = fabs(nodal_dist.y) / (traverse.y / traverse_time);
-		 cv::KeyPoint curr_loc =  keypoint_query[matches[i].queryIdx];
-		 OpticalQuad::Tau tau(cv::Point2f(tauX,tauY),curr_loc);
-		 tauVals.push_back(tau);
+		 float origin_pt = euclid_distance(keypoint_train[matches[i].queryIdx].pt,nodal_pt.pt);
+		 float current_pt = euclid_distance(keypoint_query[matches[i].trainIdx].pt,nodal_pt.pt);
+
+		 float traverse_time= time_elapsed(frame_last,frame_current);
+
+		 float tauV = (current_pt - origin_pt);/// traverse_time;
+
+		 cv::KeyPoint curr_loc =  keypoint_query[matches[i].trainIdx];
+		 OpticalQuad::Tau tau(tauV,curr_loc);
+		  tauVals.push_back(tau);
+
+		 tau_log << tauV << ", ";
+
 	}
+
 	tau_log << endl;
-	clock_gettime(CLOCK_MONOTONIC,&end);
-	data_log2 << time_elapsed(begin,end) << endl;
 }
 void ObstacleDetector::undistort(cv::Mat raw_frame)
 {
@@ -138,7 +146,7 @@ void ObstacleDetector::undistort(cv::Mat raw_frame)
 void ObstacleDetector::initialFrame(cv::Mat input_image, vector<cv::KeyPoint> detected_keypoints, cv::Mat descriptors)
 {
 	frame_count = 0;
-
+#if 0
 	cv::Mat mask(detected_keypoints.size(),detected_keypoints.size(),CV_8UC1);
 	vector<int> averages;
 	cv::Mat keypoint_mask = cv::Mat::ones(detected_keypoints.size(),1,CV_8UC1);
@@ -151,30 +159,23 @@ void ObstacleDetector::initialFrame(cv::Mat input_image, vector<cv::KeyPoint> de
 
 	for(unsigned int i = 0;i<detected_keypoints.size();i++)
 		averages.push_back(cv::mean(distances.row(i),mask.row(i))[0]);
-
 	for(int col=0;col<(int)detected_keypoints.size();col++)
 		if(keypoint_mask.at<char>(col,1))
 			for(int row=0;row<(int)detected_keypoints.size();row++)
-				if((distances.at<float>(row,col) < (float)20) && keypoint_mask.at<char>(row,1))
+				if((distances.at<float>(row,col) < (float)5) && keypoint_mask.at<char>(row,1))
 				{
 					int badPoint = averages[row] > averages[col] ? row : col;
 					detected_keypoints.erase(detected_keypoints.begin()+badPoint);
 					keypoint_mask.at<char>(badPoint,1) = 0;
 				}
-
-	extractor->compute(undistorted_frame,detected_keypoints,descriptors);
-	cv::drawKeypoints(undistorted_frame,keypoint_train_adjusted,initial_frame,cv::Scalar(255,255,0));
+#endif
+//	extractor->compute(input_image,detected_keypoints,descriptors);
+	//cv::drawKeypoints(undistorted_frame,keypoint_train_adjusted,initial_frame,cv::Scalar(255,255,0));
+	input_image.copyTo(initial_frame);
 	descriptors.copyTo(descriptor_train);
 	keypoint_train.clear();
-	keypoint_train_adjusted.clear();
 	for(unsigned int i=0;i<detected_keypoints.size();i++)
-	{
 		keypoint_train.push_back(detected_keypoints[i]);
-		cv::KeyPoint adjusted = detected_keypoints[i];
-		adjusted.pt.x += roi_rec->x;
-		adjusted.pt.y += roi_rec->y;
-		keypoint_train_adjusted.push_back(adjusted);
-	}
 }
 float ObstacleDetector::time_elapsed(timespec start, timespec end)
 {

@@ -9,11 +9,11 @@
 
 namespace OpticalQuad {
 
-Tau::Tau() : tau(0,0), location(0,0,0)
+Tau::Tau() : tau(0), location(0,0,0)
 {
 
 }
-Tau::Tau(cv::Point2f tau, cv::KeyPoint location) : tau(tau), location(location)
+Tau::Tau(float tau, cv::KeyPoint location) : tau(tau), location(location)
 {
 	// TODO Auto-generated constructor stub
 
