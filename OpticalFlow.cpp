@@ -39,15 +39,14 @@ int main(void)
 {
 
 
-	//VideoCapture video("./video/home_vids/round_house_gp_med.mp4");
+
+#if 1
 	VideoCapture video(0);
-
-
-
 	video.set(CV_CAP_PROP_FRAME_WIDTH,320);
 	video.set(CV_CAP_PROP_FRAME_HEIGHT,240);
-
-
+#else
+	VideoCapture video("./video/home_vids/round_house_gp_med.mp4");
+#endif
 	if(!video.isOpened()){
 		cout << "ERROR: Could not open file." << endl;
 		return 1;
@@ -116,7 +115,7 @@ int main(void)
 			continue;
 		}
 		detector.matchFrame(raw_frame);
-		clock_gettime(CLOCK_MONOTONIC,&end);
+
 #if 0
 		vector<char> MASK_G,MASK_B;
 		float correct, incorrect;
@@ -149,10 +148,7 @@ int main(void)
 			rectangle(detector.undistorted_frame,*detector.roi_rec,Scalar(255,0,0));
 
 			drawMatches(detector.initial_frame,detector.keypoint_train,detector.undistorted_frame,detector.keypoint_query,detector.matches,output_frame,Scalar(0,255,0),Scalar(0,0,255));
-			fps = 1.0/((end.tv_sec + end.tv_nsec/1000000000.0) - (start.tv_sec + start.tv_nsec/1000000000.0));
-			char output_text[30];
-			sprintf(output_text,"FPS: %4.2f",fps);
-			putText(output_frame,output_text,Point(10,30),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
+
 
 			Mat tauPlot, bin_tauPlot;
 
@@ -203,6 +199,12 @@ int main(void)
 				Point2f final_ufil(bin_loc[i]+2,height_ufil);
 			//	line(bin_tauPlot,origin_ufil,final_ufil,Scalar(0,255,0),3);
 			}
+			clock_gettime(CLOCK_MONOTONIC,&end);
+
+			fps = 1.0/((end.tv_sec + end.tv_nsec/1000000000.0) - (start.tv_sec + start.tv_nsec/1000000000.0));
+			char output_text[30];
+			sprintf(output_text,"FPS: %4.2f",fps);
+			putText(output_frame,output_text,Point(10,30),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
 #endif
 			for(unsigned int i=0;i<detector.tauVals.size();i++)
 			{
