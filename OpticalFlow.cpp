@@ -42,8 +42,8 @@ int main(void)
 
 #if 1
 	VideoCapture video(0);
-	video.set(CV_CAP_PROP_FRAME_WIDTH,320);
-	video.set(CV_CAP_PROP_FRAME_HEIGHT,240);
+	video.set(CV_CAP_PROP_FRAME_WIDTH,480);
+	video.set(CV_CAP_PROP_FRAME_HEIGHT,640);
 #else
 	VideoCapture video("./video/home_vids/round_house_gp_med.mp4");
 #endif
