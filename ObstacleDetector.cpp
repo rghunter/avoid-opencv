@@ -14,7 +14,7 @@
 
 ObstacleDetector::ObstacleDetector(double hessian_threshold, int octaves, float pattern_size, const char *camera_calibration, int height, int width)
 {
-	FAST_Detector = new cv::FastFeatureDetector(60,true);
+	FAST_Detector = new cv::FastFeatureDetector(30,true);
 	SURF_Detector = new OpticalQuad::SURF(4,4,4,0.0007f);
 	extractor = new cv::FREAK(false,true,70,4);
 
