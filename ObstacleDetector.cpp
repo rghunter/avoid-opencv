@@ -14,7 +14,7 @@
 
 ObstacleDetector::ObstacleDetector(double hessian_threshold, int octaves, float pattern_size, const char *camera_calibration, int height, int width)
 {
-	FAST_Detector = new cv::FastFeatureDetector(30,true);
+	FAST_Detector = new cv::FastFeatureDetector(60,true);
 	SURF_Detector = new OpticalQuad::SURF(4,4,4,0.0007f);
 	extractor = new cv::FREAK(false,true,70,4);
 
@@ -94,6 +94,9 @@ void ObstacleDetector::matchFrame(cv::Mat input_image)
 
 	extractor->compute(undistorted_frame,keypoint_query,descriptor_query);
 
+	if(descriptor_query.rows == 0)
+		return;
+
 	if(keypoint_train.size() == 0 || frame_count > REFRESH_AFTER)
 	{
 		this->initialFrame(undistorted_frame,keypoint_query,descriptor_query);
@@ -117,9 +120,10 @@ void ObstacleDetector::matchFrame(cv::Mat input_image)
 		 float origin_pt = euclid_distance(keypoint_train[matches[i].queryIdx].pt,nodal_pt.pt);
 		 float current_pt = euclid_distance(keypoint_query[matches[i].trainIdx].pt,nodal_pt.pt);
 
-		 float traverse_time= time_elapsed(frame_last,frame_current);
+		 float traverse_time=1.0;// time_elapsed(frame_last,frame_current);
 
-		 float tauV = (current_pt - origin_pt);/// traverse_time;
+		 float tauV = (current_pt - origin_pt) / traverse_time;
+		 //float tauV = (keypoint_train[matches[i].queryIdx].pt.x - keypoint_query[matches[i].trainIdx].pt.x);
 
 		 cv::KeyPoint curr_loc =  keypoint_query[matches[i].trainIdx];
 		 OpticalQuad::Tau tau(tauV,curr_loc);

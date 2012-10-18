@@ -14,7 +14,9 @@
 #define ACC_EUCLID 60
 #define RECORD_VIDEO 1
 
-#define NUM_BINS	11
+#define NUM_BINS	7
+
+#define STD_DEV		1
 
 using namespace cv;
 using namespace std;
@@ -40,13 +42,14 @@ int main(void)
 
 
 
-#if 1
+#if 0
 	VideoCapture video(0);
 	video.set(CV_CAP_PROP_FRAME_WIDTH,480);
 	video.set(CV_CAP_PROP_FRAME_HEIGHT,640);
 #else
-	VideoCapture video("./video/home_vids/round_house_gp_med.mp4");
+	VideoCapture video("./video/home_vids/up_driverway_gp_med.mp4");
 #endif
+
 	if(!video.isOpened()){
 		cout << "ERROR: Could not open file." << endl;
 		return 1;
@@ -89,7 +92,7 @@ int main(void)
 
 
 #if RECORD_VIDEO
-	VideoWriter recorder("./output.avi", CV_FOURCC('D','I','V','X'),4,Size(width*2,height*2),true);
+	VideoWriter recorder("./output.avi", CV_FOURCC('D','I','V','X'),10,Size(width*2,height*2),true);
 	if(!recorder.isOpened())
 	{
 		cout << "Could not open file for recording" << endl;
@@ -158,71 +161,83 @@ int main(void)
 
 			tauPlot.copyTo(bin_tauPlot);
 
-			float scale_space = tauPlot.rows/50.0f;
+			float scale_space = tauPlot.rows/30.0f;
 			float center = tauPlot.rows/2.0f;
-			float it = bin_tauPlot.cols / NUM_BINS;
 
-
-			for(unsigned int i=0;i<detector.tauVals.size();i++)
-				bins[floor(detector.tauVals[i].location.pt.x/it)].push_back(
-						detector.tauVals[i].tau);
+			vector<OpticalQuad::Tau> fil_tau;
+			float avg = 0;
 #if 1
-			for(int i=0;i<NUM_BINS;i++)
-			{
-				float avg = 0;
-				if(bins[i].size() == 0)
-					continue;
-				for(int t=0;t<bins[i].size();t++)
-					avg += bins[i][t];
-				avg = avg / bins[i].size();
-				float std_av = 0;
-				for(int t=0;t<bins[i].size();t++)
-					std_av += pow((bins[i][t]-avg),2);
-				float std = sqrt(std_av/bins[i].size()-1);
-				float fil_av=0;
-				int num = 0;
-				for(int t=0;t<bins[i].size();t++)
-					if((bins[i][t] > (avg-std)) && (bins[i][t] < (avg+std)))
-					{
-						num++;
-						fil_av += bins[i][t];
-					}
-				fil_av = fil_av / num;
-				bins[i].clear();
-				float height_fil = center - (fil_av * scale_space);
-				float height_ufil = center - (avg * scale_space);
-				Point2f origin_fil(bin_loc[i]-2,(bin_tauPlot.rows/2.0f));
-				Point2f final_fil(bin_loc[i]-2,height_fil);
-				line(bin_tauPlot,origin_fil,final_fil,Scalar(0,0,255),3);
 
-				Point2f origin_ufil(bin_loc[i]+2,(bin_tauPlot.rows/2.0f));
-				Point2f final_ufil(bin_loc[i]+2,height_ufil);
-			//	line(bin_tauPlot,origin_ufil,final_ufil,Scalar(0,255,0),3);
-			}
-			clock_gettime(CLOCK_MONOTONIC,&end);
-
-			fps = 1.0/((end.tv_sec + end.tv_nsec/1000000000.0) - (start.tv_sec + start.tv_nsec/1000000000.0));
-			char output_text[30];
-			sprintf(output_text,"FPS: %4.2f",fps);
-			putText(output_frame,output_text,Point(10,30),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
-#endif
 			for(unsigned int i=0;i<detector.tauVals.size();i++)
+				avg += detector.tauVals[i].tau;
+			avg = avg / (float)detector.tauVals.size();
+
+			float variance = 0;
+			for(unsigned int i=0;i<detector.tauVals.size();i++)
+				variance += (detector.tauVals[i].tau - avg) * (detector.tauVals[i].tau - avg);
+
+
+
+			float std_deviation = sqrt(variance/(float)detector.tauVals.size());
+
+			for(unsigned int i=0; i<detector.tauVals.size();i++)
+				if((detector.tauVals[i].tau > (avg - std_deviation))
+						&& (detector.tauVals[i].tau < (avg + std_deviation)))
+					fil_tau.push_back(detector.tauVals[i]);
+#else
+			for(int i = 0; i<detector.tauVals.size();i++)
+				fil_tau.push_back(detector.tauVals[i]);
+#endif
+
+			for(unsigned int i=0;i<fil_tau.size();i++)
 			{
-				Point2f location = detector.tauVals[i].location.pt;
-				float tau = detector.tauVals[i].tau;
+				Point2f location = fil_tau[i].location.pt;
+				float tau = fil_tau[i].tau;
 				float height = scale_space * tau;
 				float final_height = center - height;
 				Point2f origin(location.x,tauPlot.rows/2.0f);
 				line(tauPlot,origin,Point2f(location.x,final_height),Scalar(0,0,255),2);
 			}
 
+			float it = bin_tauPlot.cols / NUM_BINS;
+
+			for(unsigned int i=0;i<fil_tau.size();i++)
+				bins[floor(fil_tau[i].location.pt.x/it)].push_back(
+						fil_tau[i].tau);
+#if 1
+			for(int i=0;i<NUM_BINS;i++)
+			{
+				float avg = 0;
+				if(bins[i].size() == 0)
+					continue;
+				for(unsigned int t=0;t<bins[i].size();t++)
+					avg += bins[i][t];
+				avg = avg / bins[i].size();
+				bins[i].clear();
+				float height = center - (avg * scale_space);
+				Point2f origin(bin_loc[i],(bin_tauPlot.rows/2.0f));
+				Point2f final(bin_loc[i],height);
+				line(bin_tauPlot,origin,final,Scalar(0,0,255),3);
+			}
+			clock_gettime(CLOCK_MONOTONIC,&end);
+
+			fps = 1.0/((end.tv_sec + end.tv_nsec/1000000000.0) - (start.tv_sec + start.tv_nsec/1000000000.0));
+			char fps_text[100];
+			char track_text[30];
+			sprintf(fps_text,"FPS: %4.2f",fps);
+			sprintf(track_text,"Num Tracked: %i", detector.keypoint_train.size());
+			putText(output_frame,fps_text,Point(10,30),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
+			putText(output_frame,track_text,Point(10,60),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
+#endif
+
+
 			Size size(output_frame.cols,output_frame.rows+tauPlot.rows);
 
 			Mat outImg(size,CV_MAKETYPE(output_frame.depth(),3));
 			Mat top,bottom_left,bottom_right;
 
-			putText(tauPlot,"Tau X Plot",Point(10,30),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
-			putText(bin_tauPlot,"Binned Tau X Plot",Point(10,30),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
+			putText(tauPlot,"Inverse Tau Plot (Filtered)",Point(10,30),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
+			putText(bin_tauPlot,"Binned Inverse Tau Plot (Filtered)",Point(10,30),FONT_HERSHEY_PLAIN,2,Scalar(0,0,255),2);
 
 
 			top = outImg(Rect(0,0,output_frame.cols,output_frame.rows));
@@ -232,13 +247,8 @@ int main(void)
 			tauPlot.copyTo(bottom_left);
 			bin_tauPlot.copyTo(bottom_right);
 
-			//imshow("combined",outImg);
+			imshow("combined",outImg);
 
-
-
-			//imshow("output",output_frame);
-			//imshow("Tau Plot",tauPlot);
-			//imshow("Binned Tau Plot",bin_tauPlot);
 
 #if RECORD_VIDEO
 			recorder << outImg;
