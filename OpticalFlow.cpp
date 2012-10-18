@@ -39,13 +39,13 @@ int main(void)
 {
 
 
-	VideoCapture video("./video/home_vids/round_house_gp_med.mp4");
-	//VideoCapture video(0);
+	//VideoCapture video("./video/home_vids/round_house_gp_med.mp4");
+	VideoCapture video(0);
 
 
 
-//	video.set(CV_CAP_PROP_FRAME_WIDTH,320);
-//	video.set(CV_CAP_PROP_FRAME_HEIGHT,240);
+	video.set(CV_CAP_PROP_FRAME_WIDTH,320);
+	video.set(CV_CAP_PROP_FRAME_HEIGHT,240);
 
 
 	if(!video.isOpened()){
@@ -230,7 +230,7 @@ int main(void)
 			tauPlot.copyTo(bottom_left);
 			bin_tauPlot.copyTo(bottom_right);
 
-			imshow("combined",outImg);
+			//imshow("combined",outImg);
 
 
 
