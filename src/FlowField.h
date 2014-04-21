@@ -11,33 +11,32 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
-using namespace std;
-
 namespace COLA {
 
 class FlowPoint {
 
 public:
-	cv::KeyPoint root;
-	cv::KeyPoint magnitude;
+	cv::Point2f root;
+	cv::Point2f magnitude;
 	float delta_t;
 
 	FlowPoint(cv::KeyPoint root, cv::KeyPoint magnitude, float delta_t);
+	FlowPoint(cv::Point2f root, cv::Point2f magnitude, float delta_t);
 };
 
 class FlowField {
 
 private:
 	float timeDelta;
-	vector<FlowPoint> flowField;
+	std::vector<FlowPoint> flowField;
 
 public:
 	FlowField(float delta_ms);
 	FlowField(float delta_ms, int size);
 	virtual ~FlowField();
 
-	void addFlowPoint(const FlowPoint *flow_point);
-	const FlowPoint* getFlowPoint(int index);
+	void addFlowPoint(const FlowPoint flow_point);
+	const FlowPoint getFlowPoint(int index);
 
 	int getLength(void);
 	float getTimeDelta(void);
