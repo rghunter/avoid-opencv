@@ -6,10 +6,11 @@
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
-#include "ObstacleDetector.h"
 #include <sys/time.h>
 #include <unistd.h>
 #include <signal.h>
+
+#include "FeatureTracker.h"
 
 #define ACC_EUCLID 60
 #define RECORD_VIDEO 1
@@ -39,9 +40,6 @@ void end_signal(int a)
 
 int main(void)
 {
-
-
-
 #if 0
 	VideoCapture video(0);
 	video.set(CV_CAP_PROP_FRAME_WIDTH,480);
@@ -61,12 +59,10 @@ int main(void)
 
 	cout << "FPS: " << vid_fps << endl;
 
-	ObstacleDetector detector(1500,4,100,"./calibration_files/gopro.xml",height,width);
+	COLA::FeatureTracker detector(height,width);
 
 	vector<vector<float> > bins;
 	bins.resize(NUM_BINS);
-	//for(int i=0;i<bins.size();i++)
-	//	bins[i].resize(40);
 	float bin_loc[NUM_BINS];
 
 	float iterator = width / NUM_BINS;
@@ -76,6 +72,7 @@ int main(void)
 
 
 	ofstream data_log0, data_log1;
+
 	data_log0.setf(ios::floatfield);
 	data_log0.precision(2);
 	data_log0.open("./data/hitMissEval.csv");
@@ -164,7 +161,7 @@ int main(void)
 			float scale_space = tauPlot.rows/30.0f;
 			float center = tauPlot.rows/2.0f;
 
-			vector<OpticalQuad::Tau> fil_tau;
+			vector<COLA::Tau> fil_tau;
 			float avg = 0;
 #if 1
 

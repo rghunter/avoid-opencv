@@ -1,21 +1,17 @@
-CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags`
 
-OBJS =		OpticalFlow.o ObstacleDetector.o Tau.o OMAP_SURF/SURF.o
-
-CFLAGS  = -O3 -g -Wall `pkg-config --cflags opencv` -D LINUX -fPIC
+TARGET =	COLA
+OBJS =		main.o FeatureTracker.o Tau.o
 
 LIBS =		`pkg-config opencv --libs`
+CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags`
+CFLAGS  = -O3 -g -Wall `pkg-config --cflags opencv` -D LINUX -fPIC
 
-TARGET =	OpticalFlow
+all	: $(TARGET)
 
-#$(TARGET):	$(OBJS)
-#	$(CXX) -o $(TARGET) $(CXXFLAGS) $(OBJS) $(LIBS) -pg
-all :	OpticalFlow
-
-OpticalFlow: $(OBJS)
-	$(CXX) -o OpticalFlow $(CXXFLAGS) $(OBJS) $(LIBS)
+$(TARGET) : $(OBJS)
+	$(CXX) -o $(TARGET) $(CXXFLAGS) $(OBJS) $(LIBS)
 	
-%.o: %.cpp
+%.o: src/%.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o  $@
 
 clean:

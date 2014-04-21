@@ -11,7 +11,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
-namespace OpticalQuad {
+namespace COLA {
 
 class Tau {
 public:
@@ -22,5 +22,6 @@ public:
 	cv::KeyPoint location;
 };
 
-} /* namespace OpticalQuad */
+}
+
 #endif /* TAU_H_ */

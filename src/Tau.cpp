@@ -7,7 +7,7 @@
 
 #include "Tau.h"
 
-namespace OpticalQuad {
+namespace COLA {
 
 Tau::Tau() : tau(0), location(0,0,0)
 {
@@ -23,4 +23,4 @@ Tau::~Tau() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace OpticalQuad */
+} /* namespace COLA */
