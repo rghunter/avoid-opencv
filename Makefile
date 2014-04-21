@@ -1,18 +1,36 @@
 
+#MAIN APPLICATION
 TARGET =	COLA
-OBJS = main.o Tau.o FeatureTracker.o FlowField.o
+DEPENDS = main Tau FeatureTracker FlowField
+
+#UNIT TESTS
+TESTS = FlowField_TEST
+TEST_DIR = src/tests/
+
+GTEST_DIR = gtest/
+
+#Build Environment Variables
+SRC_DIR = src/
+BUILD_DIR = build/
+
+OBJS = $(addprefix $(BUILD_DIR), $(addsuffix .o, $(DEPENDS)))
+TEST_OBJS = $(addprefix $(BUILD_DIR), $(TESTS))
 
 LIBS =		`pkg-config opencv --libs`
 CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags`
 CFLAGS  = -O3 -g -Wall `pkg-config --cflags opencv` -D LINUX -fPIC
 
-all	: $(TARGET)
+all	: $(TARGET) 
 
 $(TARGET) : $(OBJS)
 	$(CXX) -o $(TARGET) $(CXXFLAGS) $(OBJS) $(LIBS)
 	
-$(OBJS) : 
-	$(CXX) -c $(CXXFLAGS) $< -o  $@.o
-
+$(OBJS) : $(BUILD_DIR)%.o : $(SRC_DIR)%.cpp | builddir
+	$(CXX) -c $(CXXFLAGS) $< -o  $@
+	
+builddir:
+	mkdir -p build
+	
+.PHONY: clean
 clean:
 	rm -f $(OBJS) $(TARGET)
