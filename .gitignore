@@ -2,3 +2,5 @@ data
 video
 *.o
 output.avi
+COLA
+build
