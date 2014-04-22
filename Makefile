@@ -1,13 +1,7 @@
 
 #MAIN APPLICATION
 TARGET =	COLA
-DEPENDS = main Tau FeatureTracker FlowField
-
-#UNIT TESTS
-TESTS = FlowField_TEST
-TEST_DIR = src/tests/
-
-GTEST_DIR = gtest/
+DEPENDS = main FeatureTracker FlowField FrameDescriptor
 
 #Build Environment Variables
 SRC_DIR = src/

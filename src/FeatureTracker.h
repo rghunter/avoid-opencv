@@ -1,73 +1,46 @@
 /*
- * ObstacleDetector.h
+ * FeatureTracker.h
  *
- *  Created on: Sep 12, 2012
- *      Author: rghunter
+ *  Created on: Apr 22, 2014
+ *      Author: rhunter
  */
 
-#ifndef OBSTICALDETECTOR_H_
-#define FEATURETRACKER_H
+#ifndef FEATURETRACKER_H_
+#define FEATURETRACKER_H_
 
 #include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/features2d/features2d.hpp>
-#include <opencv2/nonfree/features2d.hpp>
 #include <opencv2/legacy/legacy.hpp>
-#include <iostream>
-#include <stdlib.h>
-#include <fstream>
+
+
+#include "FrameDescriptor.h"
+#include "FlowField.h"
+
 #include <sys/time.h>
-#include <unistd.h>
-#include "Tau.h"
-
-using namespace std;
-
-#define DEFAULT_HESSIAN			2500
-#define DEFAULT_OCTAVES			4
-#define DEFAULT_PATTERN_SIZE	30
-
-#define GRID_SIZE				10
 
 
 namespace COLA {
-	class FeatureTracker {
-	public:
-		vector<cv::KeyPoint> keypoint_train, keypoint_query, keypoint_query_roi;
-		vector<cv::DMatch> matches, matchesUnfiltered;
-		cv::Mat undistorted_frame;
 
-		FeatureTracker(int height, int width);
-		virtual ~FeatureTracker();
-		void matchFrame(cv::Mat input_image);
-		void initialFrame(cv::Mat input_image, vector<cv::KeyPoint> detected_keypoints, cv::Mat descriptors);
-		cv::Mat initial_frame;
-		const cv::Rect *roi_rec;
+class FeatureTracker {
+private:
+	unsigned int maxFeatures;
+	cv::Mat greyFrame;
 
-		vector<COLA::Tau> tauVals;
+	cv::FeatureDetector* detector;
+	cv::DescriptorExtractor* descriptorExtractor;
+	cv::BruteForceMatcher<cv::Hamming> matcher;
 
-	private:
-		cv::FastFeatureDetector *FAST_Detector;
-		cv::FREAK *extractor;
-		cv::BruteForceMatcher <cv::Hamming> matcher;
-		cv::KeyPoint nodal_pt;
+	std::vector<cv::KeyPoint> tempPoints; //we use this as a buffer in case we get more keypoints than we wanted.
 
-		cv::Mat descriptor_query, descriptor_train;
-		cv::Mat camera_matrix, distortion_coeffs;
+	inline float timeElapsed(timespec start, timespec end);
+public:
 
+	FeatureTracker(unsigned int maxFeatures=1000);
+	virtual ~FeatureTracker();
+	bool generateDescriptors(cv::Mat &frame, COLA::FrameDescriptor &frameDescriptor);
+	bool frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescriptor &query, COLA::FlowField &field);
+};
 
-		ofstream data_log2, tau_log;
-		cv::Mat roi_subframe;
+} /* namespace COLA */
 
-		timespec frame_last,frame_current;
-
-		int frame_count;
-
-		bool undistortImage;
-
-		float euclid_distance(cv::Point2f pt1, cv::Point2f pt2);
-		void undistort(cv::Mat raw_frame);
-		float time_elapsed(timespec start, timespec end);
-	};
-}
-
-#endif
+#endif /* FEATURETRACKER_H_ */

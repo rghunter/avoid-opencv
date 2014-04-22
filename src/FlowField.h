@@ -18,29 +18,29 @@ namespace COLA {
 class FlowPoint {
 
 public:
-	cv::KeyPoint root;
-	cv::KeyPoint magnitude;
-	float delta_t;
+	cv::Point2f root;
+	cv::Point2f magnitude;
 
-	FlowPoint(cv::KeyPoint root, cv::KeyPoint magnitude, float delta_t);
+	FlowPoint(cv::Point2f root, cv::Point2f magnitude);
 };
 
 class FlowField {
 
 private:
-	float timeDelta;
 	vector<FlowPoint> flowField;
 
 public:
-	FlowField(float delta_ms);
-	FlowField(float delta_ms, int size);
+	vector<cv::DMatch> matches;
+	float timeDelta_sec;
+	FlowField(int size);
 	virtual ~FlowField();
 
-	void addFlowPoint(const FlowPoint *flow_point);
+	void addFlowPoint(FlowPoint &flow_point);
+	void addFlowPoint(const FlowPoint flow_point);
 	const FlowPoint* getFlowPoint(int index);
 
-	int getLength(void);
-	float getTimeDelta(void);
+	void clear(void);
+	int getSize(void);
 
 };
 
