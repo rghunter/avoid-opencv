@@ -17,12 +17,6 @@ using namespace std;
 
 bool isRunning = true;
 
-timespec slot1;
-timespec slot2;
-
-timespec *current;
-timespec *past;
-
 static void exit_program(int a);
 inline void swap(void *a, void *);
 
@@ -40,9 +34,6 @@ int main(void)
 		cout << "ERROR: Could not open file." << endl;
 		return 1;
 	}
-
-	current = &slot1;
-	past = &slot2;
 
 	signal(SIGINT,exit_program);
 
@@ -101,20 +92,7 @@ inline void swap(void *a, void *b) {
 	b=temp;
 }
 
-int runloop(cv::Mat &frame)
-{
-	return 0;
-}
-
 void exit_program(int a) {
 	cout << "Closing program due to caught signal" << endl;
 	isRunning = false;
-}
-
-
-void fps_delay(int fps)
-{
-
-	p
-
 }
