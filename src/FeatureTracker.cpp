@@ -62,6 +62,7 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 
 	cv::Point2f original_location;
 	cv::Point2f current_location;
+
 	for (unsigned int i=0; i<field.matches.size();i++) {
 		original_location = train.featurePoints[field.matches[i].queryIdx].pt;
 		current_location = query.featurePoints[field.matches[i].trainIdx].pt;

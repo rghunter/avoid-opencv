@@ -41,37 +41,34 @@ int main(void)
 
 	COLA::FlowField field(MAX_FEATURES);
 
-	COLA::FrameDescriptor frame_des_1;
-	COLA::FrameDescriptor frame_des_2;
-
-	COLA::FrameDescriptor* train = &frame_des_2;
-	COLA::FrameDescriptor* query = &frame_des_1;
+	COLA::FrameDescriptor train;
+	COLA::FrameDescriptor query;
 
 	COLA::FeatureTracker flow_tracker(MAX_FEATURES);
 
 	unsigned int frame_count = 0;
 	while (isRunning && video.grab())
 	{
-		query->clear();
-		video.retrieve(query->refFrame);
-		if(query->refFrame.empty()) {
+		query.clear();
+		video.retrieve(query.refFrame);
+		if(query.refFrame.empty()) {
 			cout << "BAD FRAME" << endl;
 			continue;
 		}
 
-		if(!flow_tracker.generateDescriptors(query->refFrame, *query))
+		if(!flow_tracker.generateDescriptors(query.refFrame, query))
 			continue;
 
-		if(train->refFrame.empty())
+		if(train.refFrame.empty())
 		{
 			swap(query,train);
 			continue;
 		}
 
-		flow_tracker.frameMatcher(*train, *query, field);
+		flow_tracker.frameMatcher(train, query, field);
 
-		cv::drawMatches(train->refFrame,train->featurePoints, \
-				query->refFrame, query->featurePoints, \
+		cv::drawMatches(train.refFrame,train.featurePoints, \
+				query.refFrame, query.featurePoints, \
 				field.matches, \
 				output_frame,cv::Scalar(0,255,0),cv::Scalar(0,0,255));
 
@@ -86,8 +83,8 @@ int main(void)
 	return 0;
 }
 
-inline void swap(void *a, void *b) {
-	void *temp = a;
+inline void swap(COLA::FrameDescriptor &a, COLA::FrameDescriptor &b) {
+	COLA::FrameDescriptor temp = a;
 	a=b;
 	b=temp;
 }
