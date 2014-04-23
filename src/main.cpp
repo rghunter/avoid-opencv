@@ -75,9 +75,9 @@ int main(void)
 				match_frame,cv::Scalar(0,255,0),cv::Scalar(0,0,255));
 
 
+		//Push to display
 		cv::imshow("Optical Flow",flow_frame);
 		cv::imshow("Matches",match_frame);
-
 
 		if(frame_count == 5){ frame_count = 0; swap(query,train); }
 		frame_count++;
