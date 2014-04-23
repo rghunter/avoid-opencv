@@ -16,6 +16,7 @@ namespace COLA {
 class FrameDescriptor {
 private:
 	int numberOfFeatures;
+	cv::Rect roi_rect;
 
 public:
 	std::vector<cv::KeyPoint> featurePoints;
@@ -23,7 +24,7 @@ public:
 	struct timespec timestamp;
 	cv::Mat refFrame; //The original image this descriptor set belongs too.
 
-	FrameDescriptor(int numberOfFeatures=1000);
+	FrameDescriptor(int numberOfFeatures=1000, cv::Rect roi_rect=cv::Rect());
 	virtual ~FrameDescriptor();
 
 	int MaxFeatures(void);

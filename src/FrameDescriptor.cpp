@@ -9,7 +9,7 @@
 
 namespace COLA {
 
-FrameDescriptor::FrameDescriptor(int numberOfFeatures) : numberOfFeatures(numberOfFeatures) {
+FrameDescriptor::FrameDescriptor(int numberOfFeatures, cv::Rect roi_rect) : numberOfFeatures(numberOfFeatures), roi_rect(roi_rect) {
 
 	//Allocate KeyPoint Vector
 	featurePoints.reserve(numberOfFeatures);
