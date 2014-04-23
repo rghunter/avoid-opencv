@@ -19,7 +19,7 @@ inline void swap(void *a, void *);
 
 int main(void)
 {
-#if 1
+#if 0
 	cv::VideoCapture video(0);
 //	video.set(CV_CAP_PROP_FRAME_WIDTH,480);
 //	video.set(CV_CAP_PROP_FRAME_HEIGHT,640);
@@ -34,7 +34,7 @@ int main(void)
 
 	signal(SIGINT,exit_program);
 
-	cv::Mat output_frame;
+	cv::Mat match_frame, flow_frame;
 
 	COLA::FlowField field(MAX_FEATURES);
 
@@ -65,19 +65,18 @@ int main(void)
 
 		flow_tracker.frameMatcher(train, query, field);
 		cv::Point2f flow_vector = flow.CalculateGlobalFlow(field);
-		flow.DrawFlowVector(output_frame,query.refFrame,flow_vector);
 
+		//draw the HORIZONTAL portion of the vector
+		flow.DrawFlowVector(flow_frame,query.refFrame,flow_vector);
 
-#if 0
 		cv::drawMatches(train.refFrame,train.featurePoints, \
 				query.refFrame, query.featurePoints, \
 				field.matches, \
-				output_frame,cv::Scalar(0,255,0),cv::Scalar(0,0,255));
-
-#endif
+				match_frame,cv::Scalar(0,255,0),cv::Scalar(0,0,255));
 
 
-		cv::imshow("Output",output_frame);
+		cv::imshow("Optical Flow",flow_frame);
+		cv::imshow("Matches",match_frame);
 
 
 		if(frame_count == 5){ frame_count = 0; swap(query,train); }

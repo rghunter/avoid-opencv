@@ -19,7 +19,8 @@
 
 namespace COLA {
 
-class FeatureTracker : cv::DescriptorMatcher {
+class FeatureTracker {
+
 private:
 	unsigned int maxFeatures;
 	cv::Mat greyFrame;
@@ -29,10 +30,9 @@ private:
 	cv::BruteForceMatcher<cv::Hamming> matcher;
 
 	std::vector<cv::KeyPoint> tempPoints; //we use this as a buffer in case we get more keypoints than we wanted.
-
 	inline float timeElapsed(timespec start, timespec end);
-public:
 
+public:
 	FeatureTracker(unsigned int maxFeatures=1000);
 	virtual ~FeatureTracker();
 	bool generateDescriptors(cv::Mat &frame, COLA::FrameDescriptor &frameDescriptor);
