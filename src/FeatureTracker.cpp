@@ -7,11 +7,12 @@
 
 #include "FeatureTracker.h"
 
+
 namespace COLA {
 
 FeatureTracker::FeatureTracker(unsigned int maxFeatures) : maxFeatures(maxFeatures) {
 
-	detector = new cv::FastFeatureDetector(70,true);
+	detector = new cv::FastFeatureDetector(60,true);
 	descriptorExtractor = new cv::FREAK(false,true,70,4);
 
 	tempPoints.reserve(maxFeatures); //preallocate the temp buffer.
@@ -26,7 +27,7 @@ FeatureTracker::~FeatureTracker() {
 bool FeatureTracker::generateDescriptors(cv::Mat &frame, COLA::FrameDescriptor &frameDescriptor) {
 
 	//Need to convert to greyscale
-	cvtColor(frame,greyFrame,CV_BGR2GRAY,1);
+	cv::cvtColor(frame,greyFrame,CV_BGR2GRAY,1);
 
 	detector->detect(greyFrame,frameDescriptor.featurePoints);
 
@@ -48,7 +49,7 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 
 	field.clear();
 
-	matcher.match(train.descriptors,query.descriptors,field.matches);
+	matcher.radiusMatch(train.descriptors,query.descriptors,field.matches,40);
 
 	if(field.matches.size() == 0) {
 		return false; //we didn't get any matches
@@ -62,12 +63,22 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 
 	cv::Point2f original_location;
 	cv::Point2f current_location;
-	for (unsigned int i=0; i<field.matches.size();i++) {
-		original_location = train.featurePoints[field.matches[i].queryIdx].pt;
-		current_location = query.featurePoints[field.matches[i].trainIdx].pt;
+#if 0
+	std::cout << "Size of match vector: " << field.matches.size() << std::endl;
+	for(unsigned int i =0; i<field.matches.size();i++)
+		std::cout << "Size of vector " << i << " : " << field.matches[i].size() << std::endl;
+#endif
+#if 1
 
-		field.addFlowPoint(COLA::FlowPoint(current_location, current_location-original_location));
+	for (unsigned int i=0; i<field.matches.size();i++) {
+		if(field.matches[i].size() > 0) {
+			original_location = train.featurePoints[field.matches[i][0].queryIdx].pt;
+			current_location = query.featurePoints[field.matches[i][0].trainIdx].pt;
+
+			field.flowField.push_back(COLA::FlowPoint(current_location, current_location-original_location));
+		}
 	}
+#endif
 
 	return true;
 }

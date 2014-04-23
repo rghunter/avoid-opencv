@@ -8,10 +8,8 @@
 #ifndef FEATURETRACKER_H_
 #define FEATURETRACKER_H_
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/opencv.hpp>
 #include <opencv2/legacy/legacy.hpp>
-
 
 #include "FrameDescriptor.h"
 #include "FlowField.h"
@@ -22,6 +20,7 @@
 namespace COLA {
 
 class FeatureTracker {
+
 private:
 	unsigned int maxFeatures;
 	cv::Mat greyFrame;
@@ -29,12 +28,10 @@ private:
 	cv::FeatureDetector* detector;
 	cv::DescriptorExtractor* descriptorExtractor;
 	cv::BruteForceMatcher<cv::Hamming> matcher;
-
 	std::vector<cv::KeyPoint> tempPoints; //we use this as a buffer in case we get more keypoints than we wanted.
-
 	inline float timeElapsed(timespec start, timespec end);
-public:
 
+public:
 	FeatureTracker(unsigned int maxFeatures=1000);
 	virtual ~FeatureTracker();
 	bool generateDescriptors(cv::Mat &frame, COLA::FrameDescriptor &frameDescriptor);
