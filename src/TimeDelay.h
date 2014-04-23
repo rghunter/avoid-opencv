@@ -8,6 +8,9 @@
 #ifndef TIMEDELAY_H_
 #define TIMEDELAY_H_
 
+#include <time.h>
+#include <unistd.h>
+
 namespace COLA {
 
 class TimeDelay {
@@ -15,11 +18,11 @@ private:
 	timespec current;
 	timespec past;
 	float time_delay;
-	void swap(void *a, void *b);
+	inline int elapsed(timespec start, timespec end);
+	void swap(timespec &a, timespec &b);
 public:
 	TimeDelay(int fps);
-	virtual ~TimeDelay();
-	void delay(void);
+	bool delay(void);
 };
 
 } /* namespace COLA */

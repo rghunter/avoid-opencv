@@ -12,7 +12,7 @@ namespace COLA {
 
 FeatureTracker::FeatureTracker(unsigned int maxFeatures) : maxFeatures(maxFeatures) {
 
-	detector = new cv::FastFeatureDetector(60,true);
+	detector = new cv::FastFeatureDetector(70,true);
 	descriptorExtractor = new cv::FREAK(false,true,70,4);
 
 	tempPoints.reserve(maxFeatures); //preallocate the temp buffer.

@@ -17,7 +17,6 @@ SURF::SURF(const int octaves, const int intervals, const int init_sample,
 }
 SURF::~SURF() {
 	data_log3.close();
-	// TODO Auto-generated destructor stub
 }
 bool SURF::ExtractPoints(cv::Mat &input, vector<cv::KeyPoint> &keypoints_train)
 {

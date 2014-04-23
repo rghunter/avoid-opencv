@@ -1,7 +1,7 @@
 
 #MAIN APPLICATION
 TARGET =	COLA
-DEPENDS = main FeatureTracker FlowField FrameDescriptor GlobalFlow
+DEPENDS = main FeatureTracker FlowField FrameDescriptor GlobalFlow TimeDelay
 
 #Build Environment Variables
 SRC_DIR = src/

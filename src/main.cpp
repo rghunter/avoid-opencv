@@ -4,6 +4,7 @@
 #include "FlowField.h"
 #include "FrameDescriptor.h"
 #include "GlobalFlow.h"
+#include "TimeDelay.h"
 
 #include <iostream>
 #include <signal.h>
@@ -44,6 +45,10 @@ int main(void)
 	COLA::FeatureTracker flow_tracker(MAX_FEATURES);
 	COLA::GlobalFlow flow;
 
+	COLA::TimeDelay fpsControl(15);
+
+	bool lag = false;
+
 	unsigned int frame_count = 0;
 	while (isRunning && video.grab())
 	{
@@ -76,6 +81,9 @@ int main(void)
 
 
 		//Push to display
+		if (lag) {
+			cv::putText(flow_frame,"LAG DETECTED", cv::Point2f(10,30), cv::FONT_HERSHEY_SIMPLEX,1,cv::Scalar(0,0,255),2);
+		}
 		cv::imshow("Optical Flow",flow_frame);
 		cv::imshow("Matches",match_frame);
 
@@ -83,6 +91,9 @@ int main(void)
 		frame_count++;
 
 		cv::waitKey(1);
+
+		lag = fpsControl.delay();
+
 	}
 	return 0;
 }
