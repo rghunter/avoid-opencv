@@ -26,6 +26,7 @@ private:
 
 	cv::FeatureDetector* detector;
 	cv::DescriptorExtractor* descriptorExtractor;
+	cv::BruteForceMatcher<cv::Hamming> matcher;
 
 	std::vector<cv::KeyPoint> tempPoints; //we use this as a buffer in case we get more keypoints than we wanted.
 
