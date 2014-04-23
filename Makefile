@@ -1,7 +1,7 @@
 
 #MAIN APPLICATION
 TARGET =	COLA
-DEPENDS = main FeatureTracker FlowField FrameDescriptor GlobalFlow TimeDelay
+DEPENDS = main FeatureTracker FlowField FrameDescriptor GlobalFlow TimeDelay DrawTools
 
 #Build Environment Variables
 SRC_DIR = src/
@@ -12,7 +12,7 @@ TEST_OBJS = $(addprefix $(BUILD_DIR), $(TESTS))
 
 LIBS =		`pkg-config opencv --libs`
 CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags`
-CFLAGS  = -O3 -g -Wall `pkg-config --cflags opencv` -D LINUX -fPIC
+CFLAGS  = -O0 -g -Wall `pkg-config --cflags opencv` -D LINUX -fPIC
 
 all	: $(TARGET) 
 

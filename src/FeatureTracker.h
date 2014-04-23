@@ -13,6 +13,7 @@
 
 #include "FrameDescriptor.h"
 #include "FlowField.h"
+#include "TimeDelay.h"
 
 #include <sys/time.h>
 

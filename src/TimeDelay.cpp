@@ -20,7 +20,7 @@ TimeDelay::TimeDelay(int fps) {
 bool TimeDelay::delay() {
 	bool lag; //is the frame lagging behind the designated framerate?
 	clock_gettime(CLOCK_MONOTONIC, &current);
-	int elapsed_time = elapsed(past,current);
+	int elapsed_time = timeElapsedU(past,current);
 	int remaining_time = time_delay - elapsed_time;
 	if (remaining_time > 0){
 		usleep(remaining_time);
@@ -31,16 +31,20 @@ bool TimeDelay::delay() {
 	swap(current,past);
 	return lag;
 }
-
-inline int TimeDelay::elapsed(timespec start, timespec end) {
-	return (int)((end.tv_sec*SPUSec + end.tv_nsec*NPUSec) - (start.tv_sec*SPUSec + start.tv_nsec*NPUSec));
-}
-
 void TimeDelay::swap(timespec &a, timespec &b) {
 	timespec c = a;
 	a = b;
 	b = c;
 	return;
 }
+
+float TimeDelay::timeElapsedS(timespec start, timespec end) {
+	return (end.tv_sec + end.tv_nsec/1000000000.0) - (start.tv_sec + start.tv_nsec/1000000000.0);
+}
+
+int TimeDelay::timeElapsedU(timespec start, timespec end) {
+	return (int)((end.tv_sec*SPUSec + end.tv_nsec*NPUSec) - (start.tv_sec*SPUSec + start.tv_nsec*NPUSec));
+}
+
 
 } /* namespace COLA */

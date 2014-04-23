@@ -18,10 +18,11 @@ private:
 	timespec current;
 	timespec past;
 	float time_delay;
-	inline int elapsed(timespec start, timespec end);
 	void swap(timespec &a, timespec &b);
 public:
 	TimeDelay(int fps);
+	static float timeElapsedS(timespec start, timespec end);
+	static int timeElapsedU(timespec start, timespec end);
 	bool delay(void);
 };
 

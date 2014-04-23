@@ -59,16 +59,10 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 
 	//Put it all into a flow field
 
-	field.timeDelta_sec = timeElapsed(train.timestamp,query.timestamp);
+	field.timeDelta_sec = COLA::TimeDelay::timeElapsedS(train.timestamp,query.timestamp);
 
 	cv::Point2f original_location;
 	cv::Point2f current_location;
-#if 0
-	std::cout << "Size of match vector: " << field.matches.size() << std::endl;
-	for(unsigned int i =0; i<field.matches.size();i++)
-		std::cout << "Size of vector " << i << " : " << field.matches[i].size() << std::endl;
-#endif
-#if 1
 
 	for (unsigned int i=0; i<field.matches.size();i++) {
 		if(field.matches[i].size() > 0) {
@@ -78,13 +72,10 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 			field.flowField.push_back(COLA::FlowPoint(current_location, current_location-original_location));
 		}
 	}
-#endif
 
 	return true;
 }
 
-inline float FeatureTracker::timeElapsed(timespec start, timespec end) {
-	return (end.tv_sec + end.tv_nsec/1000000000.0) - (start.tv_sec + start.tv_nsec/1000000000.0);
-}
+
 
 } /* namespace COLA */

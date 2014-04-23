@@ -5,6 +5,7 @@
 #include "FrameDescriptor.h"
 #include "GlobalFlow.h"
 #include "TimeDelay.h"
+#include "DrawTools.h"
 
 #include <iostream>
 #include <signal.h>
@@ -72,7 +73,7 @@ int main(void)
 		cv::Point2f flow_vector = flow.CalculateGlobalFlow(field);
 
 		//draw the HORIZONTAL portion of the vector
-		flow.DrawFlowVector(flow_frame,query.refFrame,flow_vector);
+		COLA::DrawTools::DrawGlobalFlowVector(flow_frame,query.refFrame,flow_vector);
 
 		cv::drawMatches(train.refFrame,train.featurePoints, \
 				query.refFrame, query.featurePoints, \
