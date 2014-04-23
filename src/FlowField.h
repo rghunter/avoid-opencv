@@ -27,20 +27,14 @@ public:
 class FlowField {
 
 private:
-	vector<FlowPoint> flowField;
 
 public:
-	vector<cv::DMatch> matches;
+	vector<FlowPoint> flowField;
+	vector<vector<cv::DMatch> > matches;
 	float timeDelta_sec;
 	FlowField(int size);
 	virtual ~FlowField();
-
-	void addFlowPoint(FlowPoint &flow_point);
-	void addFlowPoint(const FlowPoint flow_point);
-	const FlowPoint* getFlowPoint(int index);
-
 	void clear(void);
-	int getSize(void);
 
 };
 

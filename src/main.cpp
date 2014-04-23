@@ -1,12 +1,9 @@
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/features2d/features2d.hpp>
-#include <opencv2/nonfree/features2d.hpp>
-#include <opencv2/legacy/legacy.hpp>
+#include <opencv2/opencv.hpp>
 
 #include "FeatureTracker.h"
 #include "FlowField.h"
 #include "FrameDescriptor.h"
+#include "GlobalFlow.h"
 
 #include <iostream>
 #include <signal.h>
@@ -22,10 +19,10 @@ inline void swap(void *a, void *);
 
 int main(void)
 {
-#if 0
-	VideoCapture video(0);
-	video.set(CV_CAP_PROP_FRAME_WIDTH,480);
-	video.set(CV_CAP_PROP_FRAME_HEIGHT,640);
+#if 1
+	cv::VideoCapture video(0);
+//	video.set(CV_CAP_PROP_FRAME_WIDTH,480);
+//	video.set(CV_CAP_PROP_FRAME_HEIGHT,640);
 #else
 	cv::VideoCapture video("./video/home_vids/up_driverway_gp_med.mp4");
 #endif
@@ -45,6 +42,7 @@ int main(void)
 	COLA::FrameDescriptor query;
 
 	COLA::FeatureTracker flow_tracker(MAX_FEATURES);
+	COLA::GlobalFlow flow;
 
 	unsigned int frame_count = 0;
 	while (isRunning && video.grab())
@@ -66,11 +64,18 @@ int main(void)
 		}
 
 		flow_tracker.frameMatcher(train, query, field);
+		cv::Point2f flow_vector = flow.CalculateGlobalFlow(field);
+		flow.DrawFlowVector(output_frame,query.refFrame,flow_vector);
 
+
+#if 0
 		cv::drawMatches(train.refFrame,train.featurePoints, \
 				query.refFrame, query.featurePoints, \
 				field.matches, \
 				output_frame,cv::Scalar(0,255,0),cv::Scalar(0,0,255));
+
+#endif
+
 
 		cv::imshow("Output",output_frame);
 
