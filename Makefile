@@ -1,26 +1,24 @@
 
 #MAIN APPLICATION
 TARGET =	COLA
-DEPENDS = main Tau FeatureTracker FlowField
+DEPENDS = main FeatureTracker FlowField FrameDescriptor GlobalFlow TimeDelay DrawTools
 
 #UNIT TESTS
 TESTS = FlowField_TEST
 TEST_DIR = src/tests/
 
+GTEST_DIR = gtest/
+
 #Build Environment Variables
 SRC_DIR = src/
 BUILD_DIR = build/
-
-GTEST_DIR = gtest_framework
-
-CPPFLAGS += -isystem $(GTEST_DIR)/include
 
 OBJS = $(addprefix $(BUILD_DIR), $(addsuffix .o, $(DEPENDS)))
 TEST_OBJS = $(addprefix $(BUILD_DIR), $(TESTS))
 
 LIBS =		`pkg-config opencv --libs`
-CXXFLAGS =	-g -O0 -Wall `pkg-config opencv --cflags`
-G_CXXFLAGS += -g -Wall -Wextra -pthread
+CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags`
+CFLAGS  = -O0 -g -Wall `pkg-config --cflags opencv` -D LINUX -fPIC
 
 all	: $(TARGET) 
 
