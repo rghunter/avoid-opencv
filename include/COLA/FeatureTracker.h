@@ -13,7 +13,7 @@
 
 #include <COLA/FrameDescriptor.h>
 #include <COLA/FlowField.h>
-#include <COLA/TimeDelay.h>
+#include <COLA/Time.h>
 
 #include <sys/time.h>
 

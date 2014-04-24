@@ -63,7 +63,9 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 
 	//Put it all into a flow field
 
-	field.timeDelta_sec = COLA::TimeDelay::timeElapsedS(train.timestamp,query.timestamp);
+	COLA::Time* time = COLA::Time::Instance();
+
+	field.timeDelta_sec = time->timeElapsed(train.timestamp,query.timestamp);
 
 	cv::Point2f original_location;
 	cv::Point2f current_location;
