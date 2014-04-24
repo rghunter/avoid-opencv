@@ -16,18 +16,22 @@ namespace COLA {
 class FrameDescriptor {
 private:
 	int numberOfFeatures;
-	cv::Rect roi_rect;
+	bool has_been_normalized;
 
 public:
+	cv::Rect roi_rect;
+	bool roi_set;
+	cv::Point2f roi_offset;
 	std::vector<cv::KeyPoint> featurePoints;
 	cv::Mat descriptors;
 	struct timespec timestamp;
 	cv::Mat refFrame; //The original image this descriptor set belongs too.
+	cv::Mat *process_frame; //this is the frame we run the algorithim on.
 
 	FrameDescriptor(int numberOfFeatures=1000, cv::Rect roi_rect=cv::Rect());
-	virtual ~FrameDescriptor();
 
 	int MaxFeatures(void);
+	void normalizeKeypoints(void);
 	void clear(void); //Clear (but do not de-allocate) where nesssary.
 };
 

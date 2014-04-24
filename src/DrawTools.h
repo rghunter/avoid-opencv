@@ -9,6 +9,8 @@
 #define DRAWTOOLS_H_
 
 #include <opencv2/opencv.hpp>
+#include "FrameDescriptor.h"
+#include "FlowField.h"
 
 namespace COLA {
 
@@ -17,6 +19,7 @@ public:
 	virtual ~DrawTools();
 	DrawTools();
 	static void DrawGlobalFlowVector(cv::Mat &output, cv::Mat &input_frame, cv::Point2f &flow_vector);
+	static void DrawMatches(cv::Mat &output, COLA::FrameDescriptor &train, COLA::FrameDescriptor &query, COLA::FlowField &field);
 };
 
 } /* namespace COLA */

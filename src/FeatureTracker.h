@@ -24,8 +24,6 @@ class FeatureTracker {
 
 private:
 	unsigned int maxFeatures;
-	cv::Mat greyFrame;
-
 	cv::FeatureDetector* detector;
 	cv::DescriptorExtractor* descriptorExtractor;
 	cv::BruteForceMatcher<cv::Hamming> matcher;
@@ -35,7 +33,7 @@ private:
 public:
 	FeatureTracker(unsigned int maxFeatures=1000);
 	virtual ~FeatureTracker();
-	bool generateDescriptors(cv::Mat &frame, COLA::FrameDescriptor &frameDescriptor);
+	bool generateDescriptors(COLA::FrameDescriptor &frameDescriptor);
 	bool frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescriptor &query, COLA::FlowField &field);
 };
 

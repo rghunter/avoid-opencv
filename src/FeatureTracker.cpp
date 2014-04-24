@@ -13,7 +13,7 @@ namespace COLA {
 FeatureTracker::FeatureTracker(unsigned int maxFeatures) : maxFeatures(maxFeatures) {
 
 	detector = new cv::FastFeatureDetector(70,true);
-	descriptorExtractor = new cv::FREAK(false,true,70,4);
+	descriptorExtractor = new cv::FREAK(false,true,10,4);
 
 	tempPoints.reserve(maxFeatures); //preallocate the temp buffer.
 
@@ -24,12 +24,15 @@ FeatureTracker::~FeatureTracker() {
 	delete descriptorExtractor;
 }
 
-bool FeatureTracker::generateDescriptors(cv::Mat &frame, COLA::FrameDescriptor &frameDescriptor) {
+bool FeatureTracker::generateDescriptors(COLA::FrameDescriptor &frameDescriptor) {
 
 	//Need to convert to greyscale
-	cv::cvtColor(frame,greyFrame,CV_BGR2GRAY,1);
+	if(frameDescriptor.roi_set){
+		*frameDescriptor.process_frame = cv::Mat(frameDescriptor.refFrame,frameDescriptor.roi_rect);
+	}
+	cv::cvtColor(*frameDescriptor.process_frame,*frameDescriptor.process_frame,CV_BGR2GRAY,1);
 
-	detector->detect(greyFrame,frameDescriptor.featurePoints);
+	detector->detect(*frameDescriptor.process_frame,frameDescriptor.featurePoints);
 
 	if (frameDescriptor.featurePoints.size() == 0)
 		return false; //we didn't detect anything !!!
@@ -40,7 +43,8 @@ bool FeatureTracker::generateDescriptors(cv::Mat &frame, COLA::FrameDescriptor &
 	if(frameDescriptor.featurePoints.size() > maxFeatures)
 		frameDescriptor.featurePoints.resize(maxFeatures);
 
-	descriptorExtractor->compute(greyFrame,frameDescriptor.featurePoints,frameDescriptor.descriptors); //Now extract the descriptors from the frame
+	descriptorExtractor->compute(*frameDescriptor.process_frame,frameDescriptor.featurePoints,frameDescriptor.descriptors); //Now extract the descriptors from the frame
+	frameDescriptor.normalizeKeypoints();
 
 	return true; //all is good!
 }
@@ -49,7 +53,7 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 
 	field.clear();
 
-	matcher.radiusMatch(train.descriptors,query.descriptors,field.matches,40);
+	matcher.radiusMatch(train.descriptors,query.descriptors,field.matches,20);
 
 	if(field.matches.size() == 0) {
 		return false; //we didn't get any matches
