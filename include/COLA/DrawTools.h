@@ -9,8 +9,8 @@
 #define DRAWTOOLS_H_
 
 #include <opencv2/opencv.hpp>
-#include "FrameDescriptor.h"
-#include "FlowField.h"
+#include <COLA/FlowField.h>
+#include <COLA/FrameDescriptor.h>
 
 namespace COLA {
 

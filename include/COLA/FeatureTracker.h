@@ -11,12 +11,11 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/legacy/legacy.hpp>
 
-#include "FrameDescriptor.h"
-#include "FlowField.h"
-#include "TimeDelay.h"
+#include <COLA/FrameDescriptor.h>
+#include <COLA/FlowField.h>
+#include <COLA/TimeDelay.h>
 
 #include <sys/time.h>
-
 
 namespace COLA {
 

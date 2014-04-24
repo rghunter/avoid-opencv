@@ -1,6 +1,7 @@
 
 #MAIN APPLICATION
-TARGET =	COLA
+TARGET =	COLA_Test
+EXECUTABLE_SRC = main.cpp
 DEPENDS = FeatureTracker FlowField FrameDescriptor GlobalFlow TimeDelay DrawTools
 
 #Build Environment Variables
@@ -11,13 +12,12 @@ OBJS = $(addprefix $(BUILD_DIR), $(addsuffix .o, $(DEPENDS)))
 TEST_OBJS = $(addprefix $(BUILD_DIR), $(TESTS))
 
 LIBS =		`pkg-config opencv --libs`
-CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags`
-CFLAGS  = -O0 -g -Wall `pkg-config --cflags opencv` -D LINUX -fPIC
+CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags` -Iinclude/
 
 all	: $(TARGET) 
 
-$(TARGET) : src/main.cpp $(OBJS)
-	$(CXX) $(CXXFLAGS) src/main.cpp -o $(TARGET) $(CXXFLAGS) $(OBJS) $(LIBS)
+$(TARGET) : $(EXECUTABLE_SRC) $(OBJS)
+	$(CXX) $(CXXFLAGS) $(EXECUTABLE_SRC) -o $(TARGET) $(CXXFLAGS) $(OBJS) $(LIBS)
 	
 FeatureTracker : FlowField TimeDelay FrameDescriptor
 

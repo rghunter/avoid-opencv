@@ -5,7 +5,7 @@
  *      Author: rhunter
  */
 
-#include "TimeDelay.h"
+#include "COLA/TimeDelay.h"
 
 #define SPUSec 1000000.0
 #define NPUSec 0.001

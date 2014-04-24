@@ -5,7 +5,7 @@
  *      Author: rhunter
  */
 
-#include "FeatureTracker.h"
+#include "COLA/FeatureTracker.h"
 
 
 namespace COLA {

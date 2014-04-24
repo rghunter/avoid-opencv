@@ -5,7 +5,7 @@
  *      Author: rhunter
  */
 
-#include "FrameDescriptor.h"
+#include "COLA/FrameDescriptor.h"
 
 namespace COLA {
 

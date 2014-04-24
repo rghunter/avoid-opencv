@@ -1,11 +1,6 @@
 #include <opencv2/opencv.hpp>
 
-#include "FeatureTracker.h"
-#include "FlowField.h"
-#include "FrameDescriptor.h"
-#include "GlobalFlow.h"
-#include "TimeDelay.h"
-#include "DrawTools.h"
+#include <COLA/COLA.h>
 
 #include <iostream>
 #include <signal.h>

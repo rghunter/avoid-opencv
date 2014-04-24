@@ -5,7 +5,7 @@
  *      Author: rhunter
  */
 
-#include "DrawTools.h"
+#include <COLA/DrawTools.h>
 
 namespace COLA {
 
@@ -48,8 +48,5 @@ void DrawTools::DrawMatches(cv::Mat &output, COLA::FrameDescriptor &train, COLA:
 				field.matches, \
 				output,cv::Scalar(0,255,0),cv::Scalar(0,0,255), mask,2);
 }
-
-
-
 
 } /* namespace COLA */

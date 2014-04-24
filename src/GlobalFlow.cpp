@@ -5,7 +5,7 @@
  *      Author: rhunter
  */
 
-#include "GlobalFlow.h"
+#include "COLA/GlobalFlow.h"
 
 namespace COLA {
 

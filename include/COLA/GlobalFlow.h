@@ -8,7 +8,7 @@
 #ifndef GLOBALFLOW_H_
 #define GLOBALFLOW_H_
 
-#include "FlowField.h"
+#include <COLA/FlowField.h>
 
 #include <opencv2/opencv.hpp>
 
