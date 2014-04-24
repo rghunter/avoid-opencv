@@ -5,7 +5,7 @@
  *      Author: rhunter
  */
 
-#include "FlowField.h"
+#include "COLA/FlowField.h"
 
 namespace COLA {
 //Flow Point

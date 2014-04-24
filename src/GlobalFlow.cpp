@@ -5,7 +5,7 @@
  *      Author: rhunter
  */
 
-#include "GlobalFlow.h"
+#include "COLA/GlobalFlow.h"
 
 namespace COLA {
 
@@ -18,8 +18,13 @@ cv::Point2f GlobalFlow::CalculateGlobalFlow(COLA::FlowField &field) {
 	float size = field.flowField.size();
 	float timeD = field.timeDelta_sec;
 
-	float x = (float)sum.x/size/timeD;
-	float y = (float)sum.y/size/timeD;
+	float x = 0;
+	float y = 0;
+
+	if(size > 0) {
+		x = (float)sum.x/size;
+		y = (float)sum.y/size;
+	}
 
 	return 	cv::Point2f(x,y);
 

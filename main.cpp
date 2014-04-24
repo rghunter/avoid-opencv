@@ -1,11 +1,6 @@
 #include <opencv2/opencv.hpp>
 
-#include "FeatureTracker.h"
-#include "FlowField.h"
-#include "FrameDescriptor.h"
-#include "GlobalFlow.h"
-#include "TimeDelay.h"
-#include "DrawTools.h"
+#include <COLA/COLA.h>
 
 #include <iostream>
 #include <signal.h>
@@ -17,7 +12,7 @@ using namespace std;
 bool isRunning = true;
 
 static void exit_program(int a);
-inline void swap(void *a, void *);
+inline void swap_pointer(COLA::FrameDescriptor* &a, COLA::FrameDescriptor* &b);
 
 int main(void)
 {
@@ -40,8 +35,18 @@ int main(void)
 
 	COLA::FlowField field(MAX_FEATURES);
 
-	COLA::FrameDescriptor train;
-	COLA::FrameDescriptor query;
+	//lets pull the first frame off so we can get its size
+
+	cv::Mat size_frame;
+	video >> size_frame;
+
+	int height = size_frame.rows;
+	int width = size_frame.cols;
+
+	cv::Rect roi(0,height/3,width,height/3);
+
+	COLA::FrameDescriptor *train = new COLA::FrameDescriptor(MAX_FEATURES,roi);
+	COLA::FrameDescriptor *query = new COLA::FrameDescriptor(MAX_FEATURES,roi);
 
 	COLA::FeatureTracker flow_tracker(MAX_FEATURES);
 	COLA::GlobalFlow flow;
@@ -53,42 +58,40 @@ int main(void)
 	unsigned int frame_count = 0;
 	while (isRunning && video.grab())
 	{
-		query.clear();
-		video.retrieve(query.refFrame);
-		if(query.refFrame.empty()) {
+		query->clear();
+		video.retrieve(query->refFrame);
+		if(query->refFrame.empty()) {
 			cout << "BAD FRAME" << endl;
 			continue;
 		}
 
-		if(!flow_tracker.generateDescriptors(query.refFrame, query))
+		if(!flow_tracker.generateDescriptors(*query))
 			continue;
 
-		if(train.refFrame.empty())
+		if(train->refFrame.empty())
 		{
-			swap(query,train);
+			swap_pointer(query,train);
 			continue;
 		}
 
-		flow_tracker.frameMatcher(train, query, field);
+		flow_tracker.frameMatcher(*train, *query, field);
 		cv::Point2f flow_vector = flow.CalculateGlobalFlow(field);
 
 		//draw the HORIZONTAL portion of the vector
-		COLA::DrawTools::DrawGlobalFlowVector(flow_frame,query.refFrame,flow_vector);
+		COLA::DrawTools::DrawGlobalFlowVector(flow_frame,query->refFrame,flow_vector);
 
-		cv::drawMatches(train.refFrame,train.featurePoints, \
-				query.refFrame, query.featurePoints, \
-				field.matches, \
-				match_frame,cv::Scalar(0,255,0),cv::Scalar(0,0,255));
-
+		//draw the matches
+		COLA::DrawTools::DrawMatches(match_frame,*train,*query,field);
 
 		//Push to display
 		if (lag) {
 			cv::putText(flow_frame,"LAG DETECTED", cv::Point2f(10,30), cv::FONT_HERSHEY_SIMPLEX,1,cv::Scalar(0,0,255),2);
 		}
+
 		cv::imshow("Optical Flow",flow_frame);
 		cv::imshow("Matches",match_frame);
 
-		if(frame_count == 5){ frame_count = 0; swap(query,train); }
+		if(frame_count == 5){ frame_count = 0; swap_pointer(query,train); }
 		frame_count++;
 
 		cv::waitKey(1);
@@ -99,8 +102,8 @@ int main(void)
 	return 0;
 }
 
-inline void swap(COLA::FrameDescriptor &a, COLA::FrameDescriptor &b) {
-	COLA::FrameDescriptor temp = a;
+inline void swap_pointer(COLA::FrameDescriptor* &a, COLA::FrameDescriptor* &b) {
+	COLA::FrameDescriptor* temp = a;
 	a=b;
 	b=temp;
 }
