@@ -51,7 +51,7 @@ int main(void)
 	COLA::FeatureTracker flow_tracker(MAX_FEATURES);
 	COLA::GlobalFlow flow;
 
-	COLA::Time fpsControl(15);
+	COLA::Time &fpsControl = *COLA::Time::Instance(10,false);
 
 	bool lag = false;
 

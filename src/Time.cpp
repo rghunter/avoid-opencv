@@ -31,14 +31,14 @@ Time::Time(int fps, bool live) {
 bool Time::delay() {
 	clock_gettime(CLOCK_MONOTONIC, &current);
 	int elapsed_time = (int)((current.tv_sec*SPUSec + current.tv_nsec*NPUSec) - (past.tv_sec*SPUSec + past.tv_nsec*NPUSec));
-	int remaining_time = time_delay - elapsed_time;
+	int remaining_time = time_delayNS - elapsed_time;
 	if (remaining_time > 0){
 		usleep(remaining_time);
 		isLag=false;
 	}else{
 		isLag=true;
 	}
-	swap(current,past);
+	std::swap(current,past);
 	return isLag;
 }
 

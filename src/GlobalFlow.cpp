@@ -22,8 +22,8 @@ cv::Point2f GlobalFlow::CalculateGlobalFlow(COLA::FlowField &field) {
 	float y = 0;
 
 	if(size > 0) {
-		x = (float)sum.x/size;
-		y = (float)sum.y/size;
+		x = (float)sum.x/size/timeD;
+		y = (float)sum.y/size/timeD;
 	}
 
 	return 	cv::Point2f(x,y);
