@@ -13,6 +13,7 @@
 #include <utility>
 
 #include <COLA/settings.h>
+#include <COLA/FrameDescriptor.h>
 
 namespace COLA {
 
@@ -21,6 +22,7 @@ private:
 	timespec current, past;
 	float time_delayS, time_delayNS;
 	bool live;
+	int frames;
 
 	static Time* _instance;
 protected:
@@ -28,8 +30,9 @@ protected:
 public:
 	bool isLag;
 	static COLA::Time* Instance(int fps=DEFAULT_FPS, bool live=false);
-	float timeElapsed(timespec start, timespec end);
+	float timeElapsed(COLA::FrameDescriptor &start, COLA::FrameDescriptor &end);
 	bool delay(void);
+	void setTime(COLA::FrameDescriptor &frame);
 };
 
 } /* namespace COLA */

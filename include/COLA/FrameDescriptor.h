@@ -19,6 +19,7 @@ private:
 	bool has_been_normalized;
 
 public:
+	int frame_number;
 	cv::Rect roi_rect;
 	bool roi_set;
 	cv::Point2f roi_offset;

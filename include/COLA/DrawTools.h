@@ -18,7 +18,7 @@ class DrawTools {
 public:
 	virtual ~DrawTools();
 	DrawTools();
-	static void DrawGlobalFlowVector(cv::Mat &output, cv::Mat &input_frame, cv::Point2f &flow_vector);
+	static void DrawGlobalFlowVector(cv::Mat &output, cv::Mat &input_frame, cv::Vec2f &flow_vector);
 	static void DrawMatches(cv::Mat &output, COLA::FrameDescriptor &train, COLA::FrameDescriptor &query, COLA::FlowField &field);
 };
 

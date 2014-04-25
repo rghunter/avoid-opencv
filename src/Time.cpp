@@ -21,10 +21,11 @@ Time* Time::Instance(int fps, bool live) {
 	return _instance;
 }
 
-Time::Time(int fps, bool live) {
+Time::Time(int fps, bool live) : live(live) {
 	time_delayS = (1.0/(float)fps);
 	time_delayNS =	time_delayS*SPUSec;
 	isLag = false;
+	frames = 0;
 	clock_gettime(CLOCK_MONOTONIC, &past);
 }
 
@@ -38,14 +39,22 @@ bool Time::delay() {
 	}else{
 		isLag=true;
 	}
+	frames++;
 	std::swap(current,past);
 	return isLag;
 }
 
-float Time::timeElapsed(timespec start, timespec end) {
+float Time::timeElapsed(COLA::FrameDescriptor &start, COLA::FrameDescriptor &end) {
 	if(live)
-		return (end.tv_sec + end.tv_nsec/1000000000.0) - (start.tv_sec + start.tv_nsec/1000000000.0);
-	return time_delayS;
+		return (end.timestamp.tv_sec + end.timestamp.tv_nsec/1000000000.0) - (start.timestamp.tv_sec + start.timestamp.tv_nsec/1000000000.0);
+	return (end.frame_number - start.frame_number)*time_delayS;
+}
+
+void Time::setTime(COLA::FrameDescriptor &frame)
+{
+	frame.frame_number = frames;
+	if(live)
+		clock_gettime(CLOCK_MONOTONIC,&frame.timestamp);
 }
 
 

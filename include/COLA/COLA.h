@@ -5,3 +5,4 @@
 #include <COLA/FrameDescriptor.h>
 #include <COLA/GlobalFlow.h>
 #include <COLA/Time.h>
+#include <COLA/Tau.h>

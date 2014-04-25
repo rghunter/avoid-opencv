@@ -16,8 +16,7 @@ namespace COLA {
 
 class GlobalFlow {
 public:
-	cv::Point2f CalculateGlobalFlow(COLA::FlowField &flowField);
-	void DrawFlowVector(cv::Mat &outputFrame, cv::Mat &input_frame, cv::Point2f &flow_vector);
+	cv::Vec2f CalculateGlobalFlow(COLA::FlowField &flowField);
 };
 
 } /* namespace COLA */

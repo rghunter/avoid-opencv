@@ -37,7 +37,9 @@ bool FeatureTracker::generateDescriptors(COLA::FrameDescriptor &frameDescriptor)
 	if (frameDescriptor.featurePoints.size() == 0)
 		return false; //we didn't detect anything !!!
 
-	clock_gettime(CLOCK_MONOTONIC, &frameDescriptor.timestamp); //Set the timestamp
+
+	COLA::Time &time = *COLA::Time::Instance();
+	time.setTime(frameDescriptor); //Set the timestamp
 
 	//TODO: Perhaps there is a more effient way to write below? Perhaps we can just limit the features in the Detector?
 	if(frameDescriptor.featurePoints.size() > maxFeatures)
@@ -51,7 +53,7 @@ bool FeatureTracker::generateDescriptors(COLA::FrameDescriptor &frameDescriptor)
 
 bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescriptor &query, COLA::FlowField &field) {
 
-	field.clear();
+	field.reset();
 
 	matcher.radiusMatch(train.descriptors,query.descriptors,field.matches,20);
 
@@ -65,7 +67,7 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 
 	COLA::Time &time = *COLA::Time::Instance();
 
-	field.timeDelta_sec = time.timeElapsed(train.timestamp,query.timestamp);
+	float time_delta = time.timeElapsed(train,query);
 
 	cv::Point2f original_location;
 	cv::Point2f current_location;
@@ -75,7 +77,10 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 			original_location = train.featurePoints[field.matches[i][0].queryIdx].pt;
 			current_location = query.featurePoints[field.matches[i][0].trainIdx].pt;
 
-			field.flowField.push_back(COLA::FlowPoint(current_location, current_location-original_location));
+			cv::Vec2f diff_vector = current_location-original_location;
+			diff_vector *= 1.0/time_delta;
+
+			field.push_back(COLA::FlowPoint(current_location, diff_vector));
 		}
 	}
 

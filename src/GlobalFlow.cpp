@@ -9,25 +9,15 @@
 
 namespace COLA {
 
-cv::Point2f GlobalFlow::CalculateGlobalFlow(COLA::FlowField &field) {
+cv::Vec2f GlobalFlow::CalculateGlobalFlow(COLA::FlowField &field) {
 
-	cv::Point2f sum(0,0);
-	for (unsigned int i=0; i<field.flowField.size(); i++) {
-		sum += field.flowField[i].magnitude; }
+	cv::Vec2f sum(0,0);
+	for (unsigned int i=0; i<field.size(); i++)
+		sum += field[i];
 
-	float size = field.flowField.size();
-	float timeD = field.timeDelta_sec;
-
-	float x = 0;
-	float y = 0;
-
-	if(size > 0) {
-		x = (float)sum.x/size/timeD;
-		y = (float)sum.y/size/timeD;
-	}
-
-	return 	cv::Point2f(x,y);
-
+	if(field.size() > 0)
+		sum *= 1.0/(float)field.size();
+	return 	sum;
 }
 
 

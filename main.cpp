@@ -75,7 +75,7 @@ int main(void)
 		}
 
 		flow_tracker.frameMatcher(*train, *query, field);
-		cv::Point2f flow_vector = flow.CalculateGlobalFlow(field);
+		cv::Vec2f flow_vector = flow.CalculateGlobalFlow(field);
 
 		//draw the HORIZONTAL portion of the vector
 		COLA::DrawTools::DrawGlobalFlowVector(flow_frame,query->refFrame,flow_vector);
