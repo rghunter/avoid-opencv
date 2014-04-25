@@ -15,8 +15,11 @@
 namespace COLA {
 
 class GlobalFlow {
+private:
+	cv::Size frame_size;
 public:
-	cv::Vec2f CalculateGlobalFlow(COLA::FlowField &flowField);
+	GlobalFlow(cv::Size frame_size);
+	COLA::FlowPoint CalculateGlobalFlow(COLA::FlowField &flowField);
 };
 
 } /* namespace COLA */

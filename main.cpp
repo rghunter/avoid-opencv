@@ -48,8 +48,10 @@ int main(void)
 	COLA::FrameDescriptor *train = new COLA::FrameDescriptor(MAX_FEATURES,roi);
 	COLA::FrameDescriptor *query = new COLA::FrameDescriptor(MAX_FEATURES,roi);
 
+	COLA::DrawTools draw_cola;
+
 	COLA::FeatureTracker flow_tracker(MAX_FEATURES);
-	COLA::GlobalFlow flow;
+	COLA::GlobalFlow flow(size_frame.size());
 
 	COLA::Time &fpsControl = *COLA::Time::Instance(10,false);
 
@@ -75,13 +77,12 @@ int main(void)
 		}
 
 		flow_tracker.frameMatcher(*train, *query, field);
-		cv::Vec2f flow_vector = flow.CalculateGlobalFlow(field);
+		COLA::FlowPoint flow_vector = flow.CalculateGlobalFlow(field);
 
-		//draw the HORIZONTAL portion of the vector
-		COLA::DrawTools::DrawGlobalFlowVector(flow_frame,query->refFrame,flow_vector);
+		draw_cola.DrawFlowPoint(flow_frame,query->refFrame,flow_vector);
 
 		//draw the matches
-		COLA::DrawTools::DrawMatches(match_frame,*train,*query,field);
+		draw_cola.DrawMatches(match_frame,*train,*query,field);
 
 		//Push to display
 		if (lag) {

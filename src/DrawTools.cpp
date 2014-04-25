@@ -9,21 +9,12 @@
 
 namespace COLA {
 
-DrawTools::~DrawTools() {
-	// TODO Auto-generated destructor stub
-}
-
-DrawTools::DrawTools() {
-	// TODO Auto-generated constructor stub
-
-}
-void DrawTools::DrawGlobalFlowVector(cv::Mat &output, cv::Mat &input_frame, cv::Vec2f &flow_vector)
+void DrawTools::DrawFlowPoint(cv::Mat &output, cv::Mat &input_frame, COLA::FlowPoint &flow_vector)
 {
 	input_frame.copyTo(output);
-	cv::Point2f center_pt(output.cols/2,output.rows/2);
-	cv::Point2f mag_vector = center_pt + cv::Point2f(flow_vector);
+	cv::Point2f mag_vector = flow_vector.location + cv::Point2f(flow_vector);
 
-	cv::line(output,center_pt,mag_vector,cv::Scalar(0,0,255),3);
+	cv::line(output,flow_vector.location,mag_vector,cv::Scalar(0,0,255),3);
 	return;
 }
 

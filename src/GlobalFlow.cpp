@@ -9,7 +9,9 @@
 
 namespace COLA {
 
-cv::Vec2f GlobalFlow::CalculateGlobalFlow(COLA::FlowField &field) {
+GlobalFlow::GlobalFlow(cv::Size frame_size) : frame_size(frame_size) {}
+
+COLA::FlowPoint GlobalFlow::CalculateGlobalFlow(COLA::FlowField &field) {
 
 	cv::Vec2f sum(0,0);
 	for (unsigned int i=0; i<field.size(); i++)
@@ -17,7 +19,7 @@ cv::Vec2f GlobalFlow::CalculateGlobalFlow(COLA::FlowField &field) {
 
 	if(field.size() > 0)
 		sum *= 1.0/(float)field.size();
-	return 	sum;
+	return 	COLA::FlowPoint(cv::Point2f(frame_size.width/2,frame_size.height/2), sum);
 }
 
 

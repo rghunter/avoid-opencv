@@ -19,7 +19,7 @@ public:
 	cv::Point2f location;
 	Tau(float tau, cv::Point2f location);
 	Tau(COLA::FlowPoint flow_pt, cv::Point2f nodal);
-	Tau(COLA::FlowPoint flow_pt, cv::Point2f nodal, COLA::FlowPoint global_flow);
+	Tau(COLA::FlowPoint &flow_pt, cv::Point2f &nodal, COLA::FlowPoint &global_flow);
 };
 
 }
