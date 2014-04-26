@@ -12,8 +12,10 @@ namespace COLA {
 
 FeatureTracker::FeatureTracker(unsigned int maxFeatures) : maxFeatures(maxFeatures) {
 
-	detector = new cv::FastFeatureDetector(70,true);
-	descriptorExtractor = new cv::FREAK(false,true,10,4);
+	//cv::Ptr<cv::FeatureDetector> detector_algorithim(new cv::GoodFeaturesToTrackDetector(4,0.001,5));
+	cv::Ptr<cv::FeatureDetector> detector_algorithim(new cv::FastFeatureDetector(10,true));
+	detector = new cv::GridAdaptedFeatureDetector(detector_algorithim,500,2,4);
+	descriptorExtractor = new cv::FREAK(false,true,30,4);
 
 	tempPoints.reserve(maxFeatures); //preallocate the temp buffer.
 
@@ -30,6 +32,7 @@ bool FeatureTracker::generateDescriptors(COLA::FrameDescriptor &frameDescriptor)
 	if(frameDescriptor.roi_set){
 		*frameDescriptor.process_frame = cv::Mat(frameDescriptor.refFrame,frameDescriptor.roi_rect);
 	}
+
 	cv::cvtColor(*frameDescriptor.process_frame,*frameDescriptor.process_frame,CV_BGR2GRAY,1);
 
 	detector->detect(*frameDescriptor.process_frame,frameDescriptor.featurePoints);
@@ -79,8 +82,9 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 
 			cv::Vec2f diff_vector = current_location-original_location;
 			diff_vector *= 1.0/time_delta;
-
-			field.push_back(COLA::FlowPoint(current_location, diff_vector));
+			if(cv::norm(diff_vector) > 0){
+				field.push_back(COLA::FlowPoint(current_location, diff_vector));
+			}
 		}
 	}
 

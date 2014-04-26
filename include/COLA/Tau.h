@@ -17,9 +17,16 @@ class Tau : public cv::Point3f {
 public:
 	float tau;
 	cv::Point2f location;
+	cv::Point2f nodal;
 	Tau(float tau, cv::Point2f location);
-	Tau(COLA::FlowPoint flow_pt, cv::Point2f nodal);
-	Tau(COLA::FlowPoint &flow_pt, cv::Point2f &nodal, COLA::FlowPoint &global_flow);
+	Tau(COLA::FlowPoint &flow_pt, cv::Point2f nodal);
+};
+
+class TauMat : public cv::Mat {
+public:
+	TauMat(cv::Size mat_size, vector<COLA::Tau> tau_field);
+	TauMat(cv::Size mat_size, COLA::FlowField &field);
+
 };
 
 }

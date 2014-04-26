@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAX_FEATURES 1000
+#define MAX_FEATURES 3000
 
 bool isRunning = true;
 
@@ -31,7 +31,7 @@ int main(void)
 
 	signal(SIGINT,exit_program);
 
-	cv::Mat match_frame, flow_frame;
+	cv::Mat match_frame, flow_frame, tau_frame;
 
 	COLA::FlowField field(MAX_FEATURES);
 
@@ -57,7 +57,8 @@ int main(void)
 
 	bool lag = false;
 
-	unsigned int frame_count = 0;
+	int frames=0;
+
 	while (isRunning && video.grab())
 	{
 		query->clear();
@@ -84,16 +85,32 @@ int main(void)
 		//draw the matches
 		draw_cola.DrawMatches(match_frame,*train,*query,field);
 
+		vector<COLA::Tau> tau_field;
+		//Calcualte Tau
+		for(unsigned int i=0;i<field.size();i++)
+			tau_field.push_back(COLA::Tau(field[i],cv::Point2f(size_frame.cols/2,size_frame.rows/2)));
+
+		cout << "field size: " << tau_field.size() << endl;
+		COLA::TauMat tauMatrix(size_frame.size(),tau_field);
+
+		draw_cola.DrawTau(tau_frame, tauMatrix);
+
 		//Push to display
 		if (lag) {
 			cv::putText(flow_frame,"LAG DETECTED", cv::Point2f(10,30), cv::FONT_HERSHEY_SIMPLEX,1,cv::Scalar(0,0,255),2);
 		}
 
 		cv::imshow("Optical Flow",flow_frame);
+		if(tau_frame.rows > 0 && tau_frame.cols > 0)
+			cv::imshow("TAU",tau_frame);
 		cv::imshow("Matches",match_frame);
 
-		if(frame_count == 5){ frame_count = 0; swap_pointer(query,train); }
-		frame_count++;
+		if(frames == 3){
+			swap_pointer(query,train);
+			frames=0;
+		}else{
+			frames++;
+		}
 
 		cv::waitKey(1);
 
