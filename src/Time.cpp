@@ -47,7 +47,7 @@ bool Time::delay() {
 float Time::timeElapsed(COLA::FrameDescriptor &start, COLA::FrameDescriptor &end) {
 	if(live)
 		return (end.timestamp.tv_sec + end.timestamp.tv_nsec/1000000000.0) - (start.timestamp.tv_sec + start.timestamp.tv_nsec/1000000000.0);
-	return (end.frame_number - start.frame_number)*time_delayS;
+	return (float)(end.frame_number - start.frame_number)*time_delayS;
 }
 
 void Time::setTime(COLA::FrameDescriptor &frame)

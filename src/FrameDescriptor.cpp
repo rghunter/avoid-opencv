@@ -9,7 +9,7 @@
 
 namespace COLA {
 
-FrameDescriptor::FrameDescriptor(int numberOfFeatures, cv::Rect roi_rect) : numberOfFeatures(numberOfFeatures), frame_number(0), roi_rect(roi_rect) {
+FrameDescriptor::FrameDescriptor(int numberOfFeatures, cv::Rect roi_rect) :   numberOfFeatures(numberOfFeatures), roi_rect(roi_rect),frame_number(0){
 
 	//Allocate KeyPoint Vector
 	featurePoints.reserve(numberOfFeatures);
@@ -34,11 +34,9 @@ void FrameDescriptor::normalizeKeypoints(void) {
 			featurePoints[i].pt += roi_offset;
 	has_been_normalized = true;
 }
-int FrameDescriptor::MaxFeatures(void) { return numberOfFeatures; }
 
-void FrameDescriptor::clear(void) {
+void FrameDescriptor::reset(void) {
 	featurePoints.clear();
 	has_been_normalized = false;
-	//timestamp = NULL;
 }
 } /* namespace COLA */

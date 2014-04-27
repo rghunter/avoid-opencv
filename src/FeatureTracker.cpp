@@ -14,7 +14,7 @@ FeatureTracker::FeatureTracker(unsigned int maxFeatures) : maxFeatures(maxFeatur
 
 	//cv::Ptr<cv::FeatureDetector> detector_algorithim(new cv::GoodFeaturesToTrackDetector(4,0.001,5));
 	cv::Ptr<cv::FeatureDetector> detector_algorithim(new cv::FastFeatureDetector(10,true));
-	detector = new cv::GridAdaptedFeatureDetector(detector_algorithim,500,2,4);
+	detector = new cv::GridAdaptedFeatureDetector(detector_algorithim,maxFeatures,2,4);
 	descriptorExtractor = new cv::FREAK(false,true,30,4);
 
 	tempPoints.reserve(maxFeatures); //preallocate the temp buffer.
@@ -40,13 +40,8 @@ bool FeatureTracker::generateDescriptors(COLA::FrameDescriptor &frameDescriptor)
 	if (frameDescriptor.featurePoints.size() == 0)
 		return false; //we didn't detect anything !!!
 
-
 	COLA::Time &time = *COLA::Time::Instance();
 	time.setTime(frameDescriptor); //Set the timestamp
-
-	//TODO: Perhaps there is a more effient way to write below? Perhaps we can just limit the features in the Detector?
-	if(frameDescriptor.featurePoints.size() > maxFeatures)
-		frameDescriptor.featurePoints.resize(maxFeatures);
 
 	descriptorExtractor->compute(*frameDescriptor.process_frame,frameDescriptor.featurePoints,frameDescriptor.descriptors); //Now extract the descriptors from the frame
 	frameDescriptor.normalizeKeypoints();
@@ -63,10 +58,6 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 	if(field.matches.size() == 0) {
 		return false; //we didn't get any matches
 	}
-
-	//TODO: Perhaps we need to filter out matches based on an acceptable maximum HAMMING DISTANCE?
-
-	//Put it all into a flow field
 
 	COLA::Time &time = *COLA::Time::Instance();
 
