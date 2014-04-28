@@ -39,39 +39,48 @@ int main(void)
 
 	cv::Rect roi(0,height/3,width,height/3);
 
-	COLA::FrameDescriptor *train = new COLA::FrameDescriptor(MAX_FEATURES,roi);
-	COLA::FrameDescriptor *query = new COLA::FrameDescriptor(MAX_FEATURES,roi);
+	COLA::FrameDescriptor *train;
+	COLA::FrameDescriptor *query;
 
 	COLA::DrawTools draw_cola;
 
 	COLA::FeatureTracker flow_tracker(MAX_FEATURES);
 	COLA::GlobalFlow flow(size_frame.size());
 
+	COLA::SlidingWindow window(10);
+
 	//Set the singleton time control
 	COLA::Time &fpsControl = *COLA::Time::Instance(10,false);
 
+	cv::Mat raw_frame;
 	bool lag = false;
 	int frames=0;
 
 	while (isRunning && video.grab())
 	{
-		query->reset();
-		video.retrieve(query->refFrame);
-		if(query->refFrame.empty()) {
+		COLA::FrameDescriptor new_frame = *new COLA::FrameDescriptor(100,roi);
+		cv::Mat rawFrame;
+		video.retrieve(rawFrame);
+		if(rawFrame.empty()) {
 			cout << "BAD FRAME" << endl;
 			continue;
 		}
+		new_frame.SetRefFrame(rawFrame);
 
-		if(!flow_tracker.generateDescriptors(*query)) //If we did not get any descriptors, go to start of loop.
+		if(!flow_tracker.generateDescriptors(new_frame)) //If we did not get any descriptors, go to start of loop.
 			continue;
 
-		if(train->refFrame.empty()) //on the first run, we need to populate train with the first good frame, reset loop
-		{
-			swap_pointer(query,train);
-			continue;
-		}
+		window.addFrame(new_frame);
 
+		if(!window.getFrameSet(train,query))
+			continue;
+
+		cv::imshow("frame1",train->refFrame);
+		cv::waitKey(1);
+		continue;
 		flow_tracker.frameMatcher(*train, *query, field);
+
+
 		COLA::FlowPoint flow_vector = flow.CalculateGlobalFlow(field);
 
 /********/

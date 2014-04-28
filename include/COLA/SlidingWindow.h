@@ -8,16 +8,19 @@
 #ifndef SLIDINGWINDOW_H_
 #define SLIDINGWINDOW_H_
 
+#include "COLA/FrameDescriptor.h"
+#include <deque>
+
 namespace COLA {
 
 class SlidingWindow {
 
 private:
-	int size;
+	unsigned int size;
 	std::deque<COLA::FrameDescriptor> window;
 public:
-	SlidingWindow(int size);
-	bool getSet(COLA::FrameDescriptor* &train, COLA::FrameDescriptor* &query);
+	SlidingWindow(unsigned int size);
+	bool getFrameSet(COLA::FrameDescriptor* &train, COLA::FrameDescriptor* &query);
 	void addFrame(COLA::FrameDescriptor &frame);
 };
 

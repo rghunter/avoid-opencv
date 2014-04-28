@@ -14,6 +14,8 @@ FrameDescriptor::FrameDescriptor(int numberOfFeatures, cv::Rect roi_rect) :   nu
 	//Allocate KeyPoint Vector
 	featurePoints.reserve(numberOfFeatures);
 
+	refFrame = NULL;
+
 	//if we have an roi to generate, set the flag, otherwise, set process frame to point to refFrame
 	has_been_normalized = false;
 	if(roi_rect.area() > 0){
@@ -26,6 +28,13 @@ FrameDescriptor::FrameDescriptor(int numberOfFeatures, cv::Rect roi_rect) :   nu
 		process_frame = &refFrame;
 	}
 
+}
+void FrameDescriptor::SetRefFrame(cv::Mat &frame){
+	refFrame = *new cv::Mat(frame);
+}
+FrameDescriptor::~FrameDescriptor(){
+	if(!(&refFrame == NULL))
+		delete &refFrame;
 }
 
 void FrameDescriptor::normalizeKeypoints(void) {

@@ -6,3 +6,4 @@
 #include <COLA/GlobalFlow.h>
 #include <COLA/Time.h>
 #include <COLA/Tau.h>
+#include <COLA/SlidingWindow.h>

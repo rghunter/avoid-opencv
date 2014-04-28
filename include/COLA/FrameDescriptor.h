@@ -33,6 +33,11 @@ public:
 	cv::Mat *process_frame; //this is the frame we run the algorithim on.
 
 	FrameDescriptor(int numberOfFeatures=1000, cv::Rect roi_rect=cv::Rect());
+	~FrameDescriptor();
+
+	void SetRefFrame(cv::Mat &frame);
+
+
 
 	void normalizeKeypoints(void);
 	void reset(void); //Clear (but do not de-allocate) where nesssary.

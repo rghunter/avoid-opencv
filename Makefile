@@ -2,7 +2,7 @@
 #MAIN APPLICATION
 TARGET =	COLA_Test
 EXECUTABLE_SRC = main.cpp
-DEPENDS = FeatureTracker FlowField FrameDescriptor GlobalFlow Time DrawTools Tau
+DEPENDS = FeatureTracker FlowField FrameDescriptor GlobalFlow Time DrawTools Tau SlidingWindow
 
 #Build Environment Variables
 SRC_DIR = src/

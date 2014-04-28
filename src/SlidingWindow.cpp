@@ -6,22 +6,21 @@
  */
 
 #include "COLA/SlidingWindow.h"
-#include "COLA/FrameDescriptor.h"
 
 namespace COLA {
 
-SlidingWindow::SlidingWindow(int size) :size(size) { }
+SlidingWindow::SlidingWindow(unsigned int size) :size(size) { }
 
-SlidingWindow::getFrameSet(COLA::FrameDescriptor* &train, COLA::FrameDescriptor* &query){
+bool SlidingWindow::getFrameSet(COLA::FrameDescriptor* &train, COLA::FrameDescriptor* &query){
 	if(window.size() == size+1){
 		window.pop_front();
 		train = &window.front();
-		query = &window.end();
+		query = &window.back();
 		return true;
 	}
 	return false;
 }
-SlidingWindow::addFrame(FrameDescriptor &frame){
+void SlidingWindow::addFrame(FrameDescriptor &frame){
 	window.push_back(frame);
 	window.resize(size+1);
 }
