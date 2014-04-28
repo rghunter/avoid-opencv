@@ -1,6 +1,6 @@
 
 #MAIN APPLICATION
-TARGET =	COLA_Run
+TARGET =	COLA
 EXECUTABLE_SRC = main.cpp
 DEPENDS = FeatureTracker FlowField FrameDescriptor GlobalFlow Time DrawTools Tau
 
