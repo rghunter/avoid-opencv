@@ -1,6 +1,7 @@
-src/gtest_main.lo: src/gtest_main.cc /usr/include/stdc-predef.h \
- /usr/include/x86_64-linux-gnu/bits/predefs.h /usr/include/stdio.h \
- /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+src/gtest_main.lo: gtest-1.7.0/src/gtest_main.cc \
+ /usr/include/stdc-predef.h /usr/include/x86_64-linux-gnu/bits/predefs.h \
+ /usr/include/stdio.h /usr/include/features.h \
+ /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
@@ -12,8 +13,8 @@ src/gtest_main.lo: src/gtest_main.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h \
  /usr/include/x86_64-linux-gnu/bits/stdio.h \
- /usr/include/x86_64-linux-gnu/bits/stdio2.h include/gtest/gtest.h \
- /usr/include/c++/4.8/limits \
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h \
+ gtest-1.7.0/include/gtest/gtest.h /usr/include/c++/4.8/limits \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/cpu_defines.h \
@@ -85,8 +86,8 @@ src/gtest_main.lo: src/gtest_main.cc /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
  /usr/include/c++/4.8/bits/stl_bvector.h \
  /usr/include/c++/4.8/bits/vector.tcc \
- include/gtest/internal/gtest-internal.h \
- include/gtest/internal/gtest-port.h /usr/include/stdlib.h \
+ gtest-1.7.0/include/gtest/internal/gtest-internal.h \
+ gtest-1.7.0/include/gtest/internal/gtest-port.h /usr/include/stdlib.h \
  /usr/include/x86_64-linux-gnu/bits/waitflags.h \
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
  /usr/include/x86_64-linux-gnu/sys/types.h \
@@ -121,21 +122,26 @@ src/gtest_main.lo: src/gtest_main.cc /usr/include/stdc-predef.h \
  /usr/lib/gcc/x86_64-linux-gnu/4.8/include/float.h \
  /usr/include/c++/4.8/iomanip /usr/include/c++/4.8/set \
  /usr/include/c++/4.8/bits/stl_tree.h /usr/include/c++/4.8/bits/stl_set.h \
- /usr/include/c++/4.8/bits/stl_multiset.h include/gtest/gtest-message.h \
- include/gtest/internal/gtest-string.h \
- include/gtest/internal/gtest-filepath.h \
- include/gtest/internal/gtest-type-util.h /usr/include/c++/4.8/cxxabi.h \
+ /usr/include/c++/4.8/bits/stl_multiset.h \
+ gtest-1.7.0/include/gtest/gtest-message.h \
+ gtest-1.7.0/include/gtest/internal/gtest-string.h \
+ gtest-1.7.0/include/gtest/internal/gtest-filepath.h \
+ gtest-1.7.0/include/gtest/internal/gtest-type-util.h \
+ /usr/include/c++/4.8/cxxabi.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/cxxabi_tweaks.h \
- include/gtest/gtest-death-test.h \
- include/gtest/internal/gtest-death-test-internal.h \
- include/gtest/gtest-param-test.h \
- include/gtest/internal/gtest-param-util.h /usr/include/c++/4.8/iterator \
+ gtest-1.7.0/include/gtest/gtest-death-test.h \
+ gtest-1.7.0/include/gtest/internal/gtest-death-test-internal.h \
+ gtest-1.7.0/include/gtest/gtest-param-test.h \
+ gtest-1.7.0/include/gtest/internal/gtest-param-util.h \
+ /usr/include/c++/4.8/iterator \
  /usr/include/c++/4.8/bits/stream_iterator.h \
- include/gtest/internal/gtest-linked_ptr.h /usr/include/assert.h \
- include/gtest/gtest-printers.h \
- include/gtest/internal/gtest-param-util-generated.h \
- include/gtest/gtest_prod.h include/gtest/gtest-test-part.h \
- include/gtest/gtest-typed-test.h include/gtest/gtest_pred_impl.h
+ gtest-1.7.0/include/gtest/internal/gtest-linked_ptr.h \
+ /usr/include/assert.h gtest-1.7.0/include/gtest/gtest-printers.h \
+ gtest-1.7.0/include/gtest/internal/gtest-param-util-generated.h \
+ gtest-1.7.0/include/gtest/gtest_prod.h \
+ gtest-1.7.0/include/gtest/gtest-test-part.h \
+ gtest-1.7.0/include/gtest/gtest-typed-test.h \
+ gtest-1.7.0/include/gtest/gtest_pred_impl.h
 
 /usr/include/stdc-predef.h:
 
@@ -175,7 +181,7 @@ src/gtest_main.lo: src/gtest_main.cc /usr/include/stdc-predef.h \
 
 /usr/include/x86_64-linux-gnu/bits/stdio2.h:
 
-include/gtest/gtest.h:
+gtest-1.7.0/include/gtest/gtest.h:
 
 /usr/include/c++/4.8/limits:
 
@@ -351,9 +357,9 @@ include/gtest/gtest.h:
 
 /usr/include/c++/4.8/bits/vector.tcc:
 
-include/gtest/internal/gtest-internal.h:
+gtest-1.7.0/include/gtest/internal/gtest-internal.h:
 
-include/gtest/internal/gtest-port.h:
+gtest-1.7.0/include/gtest/internal/gtest-port.h:
 
 /usr/include/stdlib.h:
 
@@ -455,42 +461,42 @@ include/gtest/internal/gtest-port.h:
 
 /usr/include/c++/4.8/bits/stl_multiset.h:
 
-include/gtest/gtest-message.h:
+gtest-1.7.0/include/gtest/gtest-message.h:
 
-include/gtest/internal/gtest-string.h:
+gtest-1.7.0/include/gtest/internal/gtest-string.h:
 
-include/gtest/internal/gtest-filepath.h:
+gtest-1.7.0/include/gtest/internal/gtest-filepath.h:
 
-include/gtest/internal/gtest-type-util.h:
+gtest-1.7.0/include/gtest/internal/gtest-type-util.h:
 
 /usr/include/c++/4.8/cxxabi.h:
 
 /usr/include/x86_64-linux-gnu/c++/4.8/bits/cxxabi_tweaks.h:
 
-include/gtest/gtest-death-test.h:
+gtest-1.7.0/include/gtest/gtest-death-test.h:
 
-include/gtest/internal/gtest-death-test-internal.h:
+gtest-1.7.0/include/gtest/internal/gtest-death-test-internal.h:
 
-include/gtest/gtest-param-test.h:
+gtest-1.7.0/include/gtest/gtest-param-test.h:
 
-include/gtest/internal/gtest-param-util.h:
+gtest-1.7.0/include/gtest/internal/gtest-param-util.h:
 
 /usr/include/c++/4.8/iterator:
 
 /usr/include/c++/4.8/bits/stream_iterator.h:
 
-include/gtest/internal/gtest-linked_ptr.h:
+gtest-1.7.0/include/gtest/internal/gtest-linked_ptr.h:
 
 /usr/include/assert.h:
 
-include/gtest/gtest-printers.h:
+gtest-1.7.0/include/gtest/gtest-printers.h:
 
-include/gtest/internal/gtest-param-util-generated.h:
+gtest-1.7.0/include/gtest/internal/gtest-param-util-generated.h:
 
-include/gtest/gtest_prod.h:
+gtest-1.7.0/include/gtest/gtest_prod.h:
 
-include/gtest/gtest-test-part.h:
+gtest-1.7.0/include/gtest/gtest-test-part.h:
 
-include/gtest/gtest-typed-test.h:
+gtest-1.7.0/include/gtest/gtest-typed-test.h:
 
-include/gtest/gtest_pred_impl.h:
+gtest-1.7.0/include/gtest/gtest_pred_impl.h:

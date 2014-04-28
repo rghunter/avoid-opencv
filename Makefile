@@ -4,17 +4,19 @@ TARGET =	COLA_Test
 EXECUTABLE_SRC = main.cpp
 DEPENDS = FeatureTracker FlowField FrameDescriptor GlobalFlow Time DrawTools Tau
 
+INCLUDE_DIR = include
+
 #UNIT TESTS
 TESTS = FlowField_TEST
 TEST_DIR = src/tests/
 
-GTEST_DIR = gtest/
+GTEST_LIBS=libgtest.la libgtest_main.la
+GTEST_LIB_PATH=gtest_framework/gtest-1.7.0/lib
 
 #Build Environment Variables
-SRC_DIR = src/
-BUILD_DIR = build/
+SRC_DIR = src
 
-OBJS = $(addprefix $(BUILD_DIR), $(addsuffix .o, $(DEPENDS)))
+OBJS = $(addsuffix .o, $(DEPENDS))
 TEST_OBJS = $(addprefix $(BUILD_DIR), $(TESTS))
 
 LIBS =		`pkg-config opencv --libs`
@@ -22,14 +24,13 @@ CXXFLAGS =	-g -O0 -fno-inline -Wall `pkg-config opencv --cflags` -Iinclude/
 
 all	: $(TARGET) 
 
-$(TARGET) : $(EXECUTABLE_SRC) $(OBJS)
-	$(CXX) $(CXXFLAGS) $(EXECUTABLE_SRC) -o $(TARGET) $(CXXFLAGS) $(OBJS) $(LIBS)
+$(TARGET) : $(EXECUTABLE_SRC) COLA.a
+	$(CXX) $(CXXFLAGS) $(EXECUTABLE_SRC) -o $(TARGET) COLA.a $(LIBS)
 	
-FeatureTracker : FlowField TimeDelay FrameDescriptor
-
-GlobalFlow : FlowField
+COLA.a : $(INCLUDE_DIR)/COLA/COLA.h $(OBJS)
+	$(AR) $(ARFLAGS) $@ $^
 	
-$(OBJS) : $(BUILD_DIR)%.o : $(SRC_DIR)%.cpp | builddir
+%.o : $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/COLA/%.h
 	$(CXX) -c $(CXXFLAGS) $< -o  $@
 	
 builddir:
@@ -37,29 +38,5 @@ builddir:
 	
 .PHONY: clean
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
+	rm -rf *.o *.a $(TARGET)
 	
-# Builds gtest.a and gtest_main.a.
-
-GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
-                $(GTEST_DIR)/include/gtest/internal/*.h
-
-# Usually you shouldn't tweak such internal variables, indicated by a
-# trailing _.
-GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
-	
-# For simplicity and to avoid depending on Google Test's
-# implementation details, the dependencies specified below are
-# conservative and not optimized.  This is fine as Google Test
-# compiles fast and for ordinary users its source rarely changes.
-$(BUILD_DIR)gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(G_CXXFLAGS) -c $(GTEST_DIR)/src/gtest-all.cc -o $@
-
-$(BUILD_DIR)gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(G_CXXFLAGS) -c $(GTEST_DIR)/src/gtest_main.cc -o $@
-
-$(BUILD_DIR)gtest.a : $(BUILD_DIR)gtest-all.o
-	$(AR) $(ARFLAGS) $@ $^
-
-gtest_main.a : $(BUILD_DIR)gtest-all.o $(BUILD_DIR)gtest_main.o
-	$(AR) $(ARFLAGS) $(BUILD_DIR)$@ $^
