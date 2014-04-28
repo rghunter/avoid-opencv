@@ -11,15 +11,15 @@
 #include <opencv2/opencv.hpp>
 #include <COLA/FlowField.h>
 #include <COLA/FrameDescriptor.h>
+#include <COLA/Tau.h>
 
 namespace COLA {
 
 class DrawTools {
 public:
-	virtual ~DrawTools();
-	DrawTools();
-	static void DrawGlobalFlowVector(cv::Mat &output, cv::Mat &input_frame, cv::Point2f &flow_vector);
-	static void DrawMatches(cv::Mat &output, COLA::FrameDescriptor &train, COLA::FrameDescriptor &query, COLA::FlowField &field);
+	void DrawFlowPoint(cv::Mat &output, cv::Mat &input_frame, FlowPoint &flow_vector);
+	void DrawMatches(cv::Mat &output, FrameDescriptor &train, FrameDescriptor &query, FlowField &field);
+	void DrawTau(cv::Mat &output, COLA::TauMat &tau_field);
 };
 
 } /* namespace COLA */

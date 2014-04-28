@@ -9,25 +9,16 @@
 
 namespace COLA {
 
-DrawTools::~DrawTools() {
-	// TODO Auto-generated destructor stub
-}
-
-DrawTools::DrawTools() {
-	// TODO Auto-generated constructor stub
-
-}
-void DrawTools::DrawGlobalFlowVector(cv::Mat &output, cv::Mat &input_frame, cv::Point2f &flow_vector)
+void DrawTools::DrawFlowPoint(cv::Mat &output, cv::Mat &input_frame, FlowPoint &flow_vector)
 {
 	input_frame.copyTo(output);
-	cv::Point2f center_pt(output.cols/2,output.rows/2);
-	cv::Point2f mag_vector = center_pt + flow_vector;
+	cv::Point2f mag_vector = flow_vector.location + cv::Point2f(flow_vector);
 
-	cv::line(output,center_pt,mag_vector,cv::Scalar(0,0,255),3);
+	cv::line(output,flow_vector.location,mag_vector,cv::Scalar(0,0,255),3);
 	return;
 }
 
-void DrawTools::DrawMatches(cv::Mat &output, COLA::FrameDescriptor &train, COLA::FrameDescriptor &query, COLA::FlowField &field)
+void DrawTools::DrawMatches(cv::Mat &output, FrameDescriptor &train, FrameDescriptor &query, FlowField &field)
 {
 	cv::Mat train_frame(train.refFrame);
 	cv::Mat query_frame(query.refFrame);
@@ -47,6 +38,12 @@ void DrawTools::DrawMatches(cv::Mat &output, COLA::FrameDescriptor &train, COLA:
 				query_frame, query.featurePoints, \
 				field.matches, \
 				output,cv::Scalar(0,255,0),cv::Scalar(0,0,255), mask,2);
+}
+void DrawTools::DrawTau(cv::Mat &output, COLA::TauMat &tau_field)
+{
+	int dialation_size = 5;
+	cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(2*dialation_size+1, 2*dialation_size+1),cv::Point(dialation_size,dialation_size));
+	cv::dilate(tau_field,output,element);
 }
 
 } /* namespace COLA */
