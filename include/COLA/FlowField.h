@@ -19,9 +19,10 @@ class FlowPoint : public cv::Vec2f {
 
 public:
 	cv::Point2f location;
+	cv::Vec2f magnitude;
 
 	FlowPoint(cv::Point2f root, cv::Vec2f magnitude);
-	FlowPoint(cv::Point2f start, cv::Point2f end, float time_delta);
+	FlowPoint(cv::Point2f &start, cv::Point2f &end, float &time_delta);
 };
 
 class FlowField : public vector<FlowPoint> {

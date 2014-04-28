@@ -51,10 +51,11 @@ int main(void)
 	COLA::Time &fpsControl = *COLA::Time::Instance(10,false);
 
 	bool lag = false;
-	int frames=0;
+	int frames=1;
 
 	while (isRunning && video.grab())
 	{
+		lag = fpsControl.delay();
 		query->reset();
 		video.retrieve(query->refFrame);
 		if(query->refFrame.empty()) {
@@ -77,8 +78,11 @@ int main(void)
 /********/
 		vector<COLA::Tau> tau_field;
 		//Calcualte Tau
+		cv::Point2f nodal(size_frame.cols/2,size_frame.rows/2);
 		for(unsigned int i=0;i<field.size();i++)
-			tau_field.push_back(COLA::Tau(field[i],cv::Point2f(size_frame.cols/2,size_frame.rows/2)));
+			if(cv::norm(field[i]) > 0)
+				tau_field.push_back(COLA::Tau(field[i],nodal));
+
 		cout << "field size: " << tau_field.size() << endl;
 		COLA::TauMat tauMatrix(size_frame.size(),tau_field);
 /********/
@@ -99,12 +103,11 @@ int main(void)
 
 		cv::waitKey(1);
 
-		lag = fpsControl.delay();
 
 //update the train frame at a regular interval
 		if(frames == 3){
 			swap_pointer(query,train);
-			frames=0;
+			frames=1;
 		}else{ frames++; }
 	}
 	return 0;
