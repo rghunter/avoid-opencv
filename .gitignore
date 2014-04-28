@@ -1,6 +1,7 @@
 data
 video
-*.o
-output.avi
+COLA
 COLA_Test
 srcOLD/
+.settings/
+.project
