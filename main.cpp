@@ -14,9 +14,23 @@ bool isRunning = true;
 static void exit_program(int a);
 inline void swap_pointer(COLA::FrameDescriptor* &a, COLA::FrameDescriptor* &b);
 
+void rotate(cv::Mat& src, double angle, cv::Mat& dst)
+{
+    int len = std::max(src.cols, src.rows);
+    cv::Point2f pt(len/2., len/2.);
+    cv::Mat r = cv::getRotationMatrix2D(pt, angle, 1.0);
+
+    cv::warpAffine(src, dst, r, cv::Size(len, len));
+}
+
 int main(void)
 {
-	cv::VideoCapture video("./video/home_vids/up_driverway_gp_med.mp4");
+
+	//cv::VideoCapture video("./video/home_vids/up_driverway_gp_med.mp4");
+	cv::VideoCapture video("./video/crashEmily.MOV");
+
+	video.set(cv::CAP_PROP_FRAME_WIDTH, 160);
+	video.set(cv::CAP_PROP_FRAME_HEIGHT, 120);
 
 	if(!video.isOpened()){
 		cout << "ERROR: Could not open file." << endl;
@@ -33,14 +47,20 @@ int main(void)
 
 	cv::Mat size_frame;
 	video >> size_frame;
+	cv::Mat rotated_size_frame;
+	rotate(size_frame,-90.0,rotated_size_frame);
 
-	int height = size_frame.rows;
-	int width = size_frame.cols;
+	int height = 640;
+	float width_mul_factor = (float)height/size_frame.cols;
+
+	int width = size_frame.rows*width_mul_factor;
+
+	cv::Size frame_size(height,width);
 
 	cv::Rect roi(0,height/3,width,height/3);
 
-	COLA::FrameDescriptor *train = new COLA::FrameDescriptor(MAX_FEATURES,roi);
-	COLA::FrameDescriptor *query = new COLA::FrameDescriptor(MAX_FEATURES,roi);
+	COLA::FrameDescriptor *train = new COLA::FrameDescriptor(MAX_FEATURES);
+	COLA::FrameDescriptor *query = new COLA::FrameDescriptor(MAX_FEATURES);
 
 	COLA::DrawTools draw_cola;
 
@@ -55,13 +75,19 @@ int main(void)
 
 	while (isRunning && video.grab())
 	{
+		cv::Mat rawFrame;
 		lag = fpsControl.delay();
 		query->reset();
-		video.retrieve(query->refFrame);
-		if(query->refFrame.empty()) {
+		video.retrieve(rawFrame);
+		if(rawFrame.empty()) {
 			cout << "BAD FRAME" << endl;
 			continue;
 		}
+
+		cv::Mat rotated_frame;
+		rotate(rawFrame,-90.0,rotated_frame);
+		cv::resize(rotated_frame,query->refFrame,frame_size);
+
 
 		if(!flow_tracker.generateDescriptors(*query)) //If we did not get any descriptors, go to start of loop.
 			continue;
