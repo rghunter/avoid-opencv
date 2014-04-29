@@ -15,14 +15,16 @@ using namespace std;
 
 namespace COLA {
 
-class FlowPoint : public cv::Vec2f {
+class FlowPoint {
 
 public:
 	cv::Point2f location;
 	cv::Vec2f magnitude;
 
 	FlowPoint(cv::Point2f root, cv::Vec2f magnitude);
-	FlowPoint(cv::Point2f &start, cv::Point2f &end, float &time_delta);
+	FlowPoint(cv::Point2f start, cv::Point2f end, float time_delta);
+	bool operator== (const FlowPoint &other) const;
+
 };
 
 class FlowField : public vector<FlowPoint> {
@@ -32,7 +34,6 @@ private:
 public:
 	vector<vector<cv::DMatch> > matches;
 	FlowField(int size);
-	virtual ~FlowField();
 	void reset(void);
 
 };

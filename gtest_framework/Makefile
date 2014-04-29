@@ -23,7 +23,7 @@ GTEST_DIR = gtest-$(GTEST_VERSION)
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra -pthread
+CXXFLAGS += -O0 -g -Wall -Wextra -pthread
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.

@@ -80,7 +80,7 @@ int main(void)
 		//Calcualte Tau
 		cv::Point2f nodal(size_frame.cols/2,size_frame.rows/2);
 		for(unsigned int i=0;i<field.size();i++)
-			if(cv::norm(field[i]) > 0)
+			if(cv::norm(field[i].magnitude) > 0)
 				tau_field.push_back(COLA::Tau(field[i],nodal));
 
 		cout << "field size: " << tau_field.size() << endl;
