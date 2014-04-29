@@ -4,6 +4,7 @@ COLA
 COLA_Test
 srcOLD/
 .settings/
+.cproject
 .project
 OMAP_SURF
 
