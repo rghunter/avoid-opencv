@@ -36,8 +36,8 @@ private:
 
 public:
 	/**
-	 * @brief	FeatureTracker Constructor, initializes the image algorithims and sets max features to track.
-	 * We use max features as a means of constrainign the computational complexity of the algorithim. FeatureTracker will save the first n
+	 * @brief	FeatureTracker Constructor, initializes the image algorithms and sets max features to track.
+	 * We use max features as a means of constraining the computational complexity of the algorithm. FeatureTracker will save the first n
 	 * features until maxFeatures is reached.
 	 *
 	 * @param maxFeatures integer representation of the max features to track
