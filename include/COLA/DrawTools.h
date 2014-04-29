@@ -15,10 +15,37 @@
 
 namespace COLA {
 
+/**
+ * \brief	DrawTools is a class containing useful utilites for drawing outputs from COLA
+ *
+ * The Drawtools class provides functions for drawing matches, flow points, and taufields
+ */
 class DrawTools {
 public:
+	/**
+	 * @brief	DrawFlowPoint is used to plot a flot point on an image
+	 *
+	 * @param output a cv::Mat containing a reference to the output frame we will write to.
+	 * @param input a cv::Mat reference to the output buffer
+	 * @param flow_vector a COLA::FlowPoint reference that will be ploted on the output buffer.
+	 */
 	void DrawFlowPoint(cv::Mat &output, cv::Mat &input_frame, FlowPoint &flow_vector);
+	/**
+	 * \brief	DrawMatches is used to plot matches from a flowfield onto an output bufer
+	 *
+	 * \param output a cv::Mat containing a reference to the output frame we will write to.
+	 * \param train a COLA::FrameDescriptor used source the train portion of the match set from
+	 * \param query a COLA::FrameDescriptor used source the query portion of the match set from
+	 * \param field a COLA::FlowField reference that will be used to source the matches for the given frame set.
+	 */
 	void DrawMatches(cv::Mat &output, FrameDescriptor &train, FrameDescriptor &query, FlowField &field);
+	/**
+	 * \brief	DrawFlowPoint is used to plot a flot point on an image
+	 *
+	 * \param output a cv::Mat containing a reference to the output frame we will write to.
+	 * \param input a cv::Mat reference to the output buffer
+	 * \param flow_vector a COLA::FlowPoint reference that will be ploted on the output buffer.
+	 */
 	void DrawTau(cv::Mat &output, COLA::TauMat &tau_field);
 };
 

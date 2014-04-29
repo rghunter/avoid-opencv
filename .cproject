@@ -39,6 +39,9 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<sourceEntries>
+						<entry excluding="gtest_framework/gtest-1.7.0" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -50,7 +53,12 @@
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Build (GNU)">
-			<resource resourceType="PROJECT" workspacePath="/OpticalFlowCV"/>
+			<resource resourceType="PROJECT" workspacePath="/OpticalFlowCV">
+				<exclusion class="org.eclipse.cdt.internal.core.resources.ResourceExclusion" contributorId="org.eclipse.cdt.ui.ResourceExclusionContributor" exclusionType="FOLDER">
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="gtest_framework/gtest-1.7.0" exclusionType="FOLDER" workspacePath="/OpticalFlowCV/gtest_framework/gtest-1.7.0"/>
+					<extensionData/>
+				</exclusion>
+			</resource>
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
@@ -63,5 +71,9 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings">
+		<doc-comment-owner id="org.eclipse.cdt.ui.doxygen">
+			<path value=""/>
+		</doc-comment-owner>
+	</storageModule>
 </cproject>
