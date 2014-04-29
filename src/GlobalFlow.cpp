@@ -15,7 +15,7 @@ COLA::FlowPoint GlobalFlow::CalculateGlobalFlow(COLA::FlowField &field) {
 
 	cv::Vec2f sum(0,0);
 	for (unsigned int i=0; i<field.size(); i++)
-		sum += field[i];
+		sum += field[i].magnitude;
 
 	if(field.size() > 0)
 		sum *= 1.0/(float)field.size();

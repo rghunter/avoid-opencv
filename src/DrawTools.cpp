@@ -12,7 +12,7 @@ namespace COLA {
 void DrawTools::DrawFlowPoint(cv::Mat &output, cv::Mat &input_frame, FlowPoint &flow_vector)
 {
 	input_frame.copyTo(output);
-	cv::Point2f mag_vector = flow_vector.location + cv::Point2f(flow_vector);
+	cv::Point2f mag_vector = flow_vector.location + cv::Point2f(flow_vector.magnitude);
 
 	cv::line(output,flow_vector.location,mag_vector,cv::Scalar(0,0,255),3);
 	return;

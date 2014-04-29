@@ -70,12 +70,8 @@ bool FeatureTracker::frameMatcher(COLA::FrameDescriptor &train, COLA::FrameDescr
 		if(field.matches[i].size() > 0) {
 			original_location = train.featurePoints[field.matches[i][0].queryIdx].pt;
 			current_location = query.featurePoints[field.matches[i][0].trainIdx].pt;
-
-			cv::Vec2f diff_vector = current_location-original_location;
-			diff_vector *= 1.0/time_delta;
-			if(cv::norm(diff_vector) > 0){
-				field.push_back(COLA::FlowPoint(current_location, diff_vector));
-			}
+			COLA::FlowPoint point(original_location,current_location, time_delta);
+			field.push_back(point);
 		}
 	}
 

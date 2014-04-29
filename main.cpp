@@ -57,7 +57,8 @@ int main(void)
 	int frames=0;
 
 	while (isRunning && video.grab())
-	{
+	{	
+		lag = fpsControl.delay();
 		COLA::FrameDescriptor new_frame = *new COLA::FrameDescriptor(100,roi);
 		cv::Mat rawFrame;
 		video.retrieve(rawFrame);
@@ -79,8 +80,6 @@ int main(void)
 		cv::waitKey(1);
 		continue;
 		flow_tracker.frameMatcher(*train, *query, field);
-
-
 		COLA::FlowPoint flow_vector = flow.CalculateGlobalFlow(field);
 
 /********/
@@ -108,7 +107,6 @@ int main(void)
 
 		cv::waitKey(1);
 
-		lag = fpsControl.delay();
 
 //update the train frame at a regular interval
 		if(frames == 3){

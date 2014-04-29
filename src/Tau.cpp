@@ -10,9 +10,9 @@
 namespace COLA {
 
 Tau::Tau(float tau, cv::Point2f location) : cv::Point3f(location.x, location.y, tau), tau(tau), location(location) { }
-Tau::Tau(COLA::FlowPoint &flow_pt, cv::Point2f nodal) : location(flow_pt.location), nodal(nodal) {
+Tau::Tau(COLA::FlowPoint &flow_pt, cv::Point2f &nodal) : location(flow_pt.location), nodal(nodal) {
 	cv::Vec2f AN(nodal-flow_pt.location);
-	tau = cv::norm(AN) / cv::norm((flow_pt.dot(AN) / AN.dot(AN))*AN);
+	tau = cv::norm(AN)/cv::norm( ( flow_pt.magnitude.dot(AN) / AN.dot(AN) )*AN);
 	cv::Point3f(location.x,location.y,tau);
 }
 
@@ -24,13 +24,8 @@ TauMat::TauMat(cv::Size mat_size, vector<COLA::Tau> tau_field) {
 			sum += tau_field[i].tau;
 			at<uchar>(tau_field[i].location) = (uchar)(tau_field[i].tau);
 		}
-	std::cout << "Average Tau: " << sum/tau_field.size() << std::endl;
+	if(tau_field.size() > 0)
+		std::cout << "Average Tau: " << sum/tau_field.size() << std::endl;
 }
-TauMat::TauMat(cv::Size mat_size, COLA::FlowField &field)
-{
-
-}
-
-
 
 } /* namespace COLA */
