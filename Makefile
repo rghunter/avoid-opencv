@@ -10,7 +10,7 @@ BUILD_DIR=build
 
 #UNIT TESTS
 TEST_TARGET= COLA_Test
-TESTS = FlowField_TEST
+TESTS = FlowField_TEST Tau_TEST
 TEST_DIR = tests
 
 GTEST_LIB_PATH=gtest_framework

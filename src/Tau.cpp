@@ -12,9 +12,7 @@ namespace COLA {
 Tau::Tau(float tau, cv::Point2f location) : cv::Point3f(location.x, location.y, tau), tau(tau), location(location) { }
 Tau::Tau(COLA::FlowPoint &flow_pt, cv::Point2f &nodal) : location(flow_pt.location), nodal(nodal) {
 	cv::Vec2f AN(nodal-flow_pt.location);
-	float mag = cv::norm(AN);
-	cv::Vec2f tau_v = (flow_pt.magnitude.dot(AN) / AN.dot(AN))*AN;
-	tau = mag/cv::norm(tau_v);
+	tau = cv::norm(AN)/cv::norm( ( flow_pt.magnitude.dot(AN) / AN.dot(AN) )*AN);
 	cv::Point3f(location.x,location.y,tau);
 }
 
