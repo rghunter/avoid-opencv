@@ -31,6 +31,12 @@ all	: $(TEST_TARGET) $(TARGET)
 
 run : $(TARGET)
 
+manual : include/COLA/*.h #We should update the manual if we update headers
+	doxygen docs/Doxyfile; \
+	cd docs/latex; \
+	$(MAKE); \
+	cp refman.pdf ../../COLA_Manual.pdf
+
 tests : $(TEST_TARGET)
 
 $(TEST_TARGET) : $(GTEST_LIBS) $(TEST_OBJS) $(OBJS)
