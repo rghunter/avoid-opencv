@@ -47,8 +47,15 @@ TEST(FlowField, TestConstructor) {
 	for(int i=0;i<size;i++){
 		input_vector.push_back(FlowPoint(cv::Point2f(i,i),cv::Point2f(i+2,i+2),10));
 	}
+
 	FlowField test_field(size);
-	for(int i=0;i<size;i++){
+	for(unsigned int i=0;i<input_vector.size();i++){
+		test_field.push_back(input_vector[i]);
+	}
+
+	ASSERT_EQ(input_vector.size(),test_field.size());
+
+	for(unsigned int i=0;i<test_field.size();i++){
 		ASSERT_EQ(test_field[i],input_vector[i]);
 	}
 }
