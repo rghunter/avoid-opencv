@@ -14,6 +14,7 @@
 using namespace std;
 
 namespace COLA {
+
 /**
  * \brief FlowPoint is an object representation of an optical flow vector
  *
@@ -22,8 +23,10 @@ namespace COLA {
 class FlowPoint {
 
 public:
-	cv::Point2f location;
-	cv::Vec2f magnitude;
+	cv::Point2f location; /**< The location of the flow point (currently) */
+
+	cv::Vec2f magnitude; /**< The magnitude of the flow */
+
 	/**
 	 * @brief	FlowPoint Constructor (Pre-Calculated flow vector)
 	 *
@@ -33,6 +36,7 @@ public:
 	 * @param magnitude cv::Vec2f floating point representation of the x and y portions of the optical flow vector magnitude
 	 */
 	FlowPoint(cv::Point2f root, cv::Vec2f magnitude);
+
 	/**
 	 * @brief	FlowPoint Constructor (Point Delta form)
 	 *
@@ -41,6 +45,7 @@ public:
 	 * @param time_delta float the elapsed time (in seconds) between start and end
 	 */
 	FlowPoint(cv::Point2f start, cv::Point2f end, float time_delta);
+
 	/**
 	 * @brief	FlowPoint equivalence operator
 	 * This operator allows us to compare COLA::FlowPoints
@@ -61,13 +66,15 @@ class FlowField : public vector<FlowPoint> {
 private:
 
 public:
-	vector<vector<cv::DMatch> > matches;
+	vector<vector<cv::DMatch> > matches;  /**< the vector of matches (for use by the matching algorithim) */
+
 	/**
 	 * @brief	Constructor
 	 *
 	 * @param size int the expected size of the flow field (used to pre-allocate the vector)
 	 */
 	FlowField(int size);
+
 	/**
 	 * @brief	Reset the FlowField
 	 * This allows us to reset the flow field without releasing the memory allocated to the vector. This is useful when we have an

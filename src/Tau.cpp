@@ -27,11 +27,5 @@ TauMat::TauMat(cv::Size mat_size, vector<COLA::Tau> tau_field) {
 	if(tau_field.size() > 0)
 		std::cout << "Average Tau: " << sum/tau_field.size() << std::endl;
 }
-TauMat::TauMat(cv::Size mat_size, COLA::FlowField &field)
-{
-
-}
-
-
 
 } /* namespace COLA */

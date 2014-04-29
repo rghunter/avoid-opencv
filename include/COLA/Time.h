@@ -16,6 +16,7 @@
 #include <COLA/FrameDescriptor.h>
 
 namespace COLA {
+
 /**
  * \brief	How COLA views time
  *
@@ -34,12 +35,21 @@ private:
 	float time_delayS, time_delayNS;
 	bool live;
 	int frames;
-
 	static Time* _instance;
+
 protected:
+	/**
+	 * @brief	Constructor (PROTECTED)
+	 *
+	 * Created a time object. This should never be directly used as the object is meant to be a singleton
+	 * @param fps the frames per second we would like Time to try to maintain
+	 * @param live sets weather we are operating in real-time (live) mode or offline.
+	 */
 	Time(int fps, bool live);
+
 public:
-	bool isLag;
+	bool isLag;  /**< Flag set when the program is lagging (i.e. the main loop takes longer to run than the requested FPS). */
+
 	/**
 	 * @brief	Singleton Constructor/Instance Retrieve
 	 *
@@ -47,22 +57,24 @@ public:
 	 * current instantiation, or construct a new instantiation using the supplied arguments. NOTE: if the singleton has already been
 	 * Instantiated, the arguments fed into instance are ignored.
 	 *
-	 * @param fps int the frames per second we want to run at
-	 * @param live bool sets whether the object is in real-time or offline mode. True sets to real-time mode False sets to offline.
+	 * @param fps the frames per second we want to run at
+	 * @param live sets whether the object is in real-time or offline mode. True sets to real-time mode False sets to offline.
 	 * @return COLA::Time* the pointer to the global singleton instantiation.
 	 */
 	static COLA::Time* Instance(int fps=DEFAULT_FPS, bool live=false);
+
 	/**
 	 * @brief	Returns the elapsed time in seconds
 	 *
 	 * This function returns the elapsed time in realtime or offline (frame count difference multiplied by inverse FPS) depending on
 	 * how the original object was instantiated.
 	 *
-	 * @param &start COLA::FrameDescriptor the earlier frame
-	 * @param &end COLA::FrameDescriptor the later frame
+	 * @param &start the earlier frame
+	 * @param &end the later frame
 	 * @return float the elapsed time in seconds
 	 */
 	float timeElapsed(COLA::FrameDescriptor &start, COLA::FrameDescriptor &end);
+
 	/**
 	 * @brief	burn off remaining time
 	 *
@@ -71,14 +83,16 @@ public:
 	 * @return bool if true, the program is lagging
 	 */
 	bool delay(void);
+
 	/**
 	 * @brief	sets the timestamp for NOW in a given COLA::FrameDescriptor
 	 *
 	 * This function updates the frame number (number of frames prior since the beginning of execution) (ALWAYS) and the timestamp
 	 * (ONLY IN LIVE MODE)
-	 * @param &frame COLA::FrameDescriptor the reference to the frame we want to set the time for.
+	 * @param &frame the reference to the frame we want to set the time for.
 	 */
 	void setTime(COLA::FrameDescriptor &frame);
+
 };
 
 } /* namespace COLA */

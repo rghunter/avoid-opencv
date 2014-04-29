@@ -12,6 +12,7 @@
 #include <COLA/FlowField.h>
 
 namespace COLA {
+
 /**
  * \brief	Calculate the Tau value for a FlowPoint
  *
@@ -21,9 +22,10 @@ namespace COLA {
  */
 class Tau : public cv::Point3f {
 public:
-	float tau;
-	cv::Point2f location;
-	cv::Point2f nodal;
+	float tau; /**< The time until collision in seconds */
+	cv::Point2f location; /**< The current location of the point on the image plane */
+	cv::Point2f nodal; /**< The nodal point of the camera (in reference to the image plane) used to calculate the Tau value */
+
 	/**
 	 * @brief	Constructor (Pre-calculated Tau)
 	 *
@@ -31,6 +33,7 @@ public:
 	 * @param location cv::Point2f the location of the tau point.
 	 */
 	Tau(float tau, cv::Point2f location);
+
 	/**
 	 * @brief	Constructor (Calculate Tau from FlowPoint)
 	 *
@@ -39,7 +42,9 @@ public:
 	 * @param &nodal cv::Point2f the nodal point of the camera (usually the center point of the frame)
 	 */
 	Tau(COLA::FlowPoint &flow_pt, cv::Point2f &nodal);
+
 };
+
 /**
  * \brief	Tau Mat UNSTABLE
  *
@@ -48,8 +53,15 @@ public:
  */
 class TauMat : public cv::Mat {
 public:
+
+	/**
+	 * @brief	Constructor (Create from vector<COLA::Tau>)
+	 *
+	 * This constructor creates a TauMat from a tau_field vector of COLA::Tau points
+	 * @param mat_size cv::Size the size of the output matrix (usually same as the frame size)
+	 * @param tau_field vector<COLA::Tau> a vector of COLA::Tau points
+	 */
 	TauMat(cv::Size mat_size, vector<COLA::Tau> tau_field);
-	TauMat(cv::Size mat_size, COLA::FlowField &field);
 
 };
 

@@ -23,10 +23,12 @@ class GlobalFlow {
 private:
 	cv::Size frame_size;
 public:
+
 	/**
 	 * @brief	Constructor (Pre-allocation)
 	 */
 	GlobalFlow(cv::Size frame_size);
+
 	/**
 	 * @brief	Global Flow calculator
 	 * @param &flowField COLA::FlowField a reference to the flow field we will average to return the global flow vector.
@@ -34,6 +36,7 @@ public:
 	 * 			is assumed to be the camera nodal point.
 	 */
 	COLA::FlowPoint CalculateGlobalFlow(COLA::FlowField &flowField);
+
 };
 
 } /* namespace COLA */
