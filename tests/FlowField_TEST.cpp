@@ -41,6 +41,17 @@ TEST(FlowPoint, Test_Equal) {
 	ASSERT_EQ(test1,test2);
 }
 
+TEST(FlowField, ZeroFlow) {
+	FlowPoint test(cv::Point2f(1,1),cv::Point2f(1,1),1.0);
+	ASSERT_EQ(test.magnitude.val[0],0);
+	ASSERT_EQ(test.magnitude.val[1],0);
+	ASSERT_EQ(cv::norm(test.magnitude),0.0);
+}
+
+TEST(FlowField, TimeZeroException) {
+	ASSERT_THROW(FlowPoint test(cv::Point2f(1,1),cv::Point2f(2,2),0), std::logic_error);
+}
+
 TEST(FlowField, TestConstructor) {
 	int size = 10;
 	std::vector<FlowPoint> input_vector;
