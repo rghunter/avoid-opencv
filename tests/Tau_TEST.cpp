@@ -22,6 +22,25 @@ TEST(Tau, Test_Math) {
 	cv::Point2f final(5,6);
 	float time = 1.0;
 
+	FlowPoint BAflow(origin,final,time);
+	cv::Vec2f AN(nodal-final);
+
+	Tau test_tau(BAflow,nodal);
+
+	float tau = cv::norm(AN)/cv::norm(AN*(BAflow.magnitude.dot(AN)/AN.dot(AN)));
+
+	ASSERT_EQ(tau,test_tau.tau);
+
+}
+
+
+/*//This test currently fails because the old method of calculating Tau isnt compatible with the orthoganal projection
+TEST(Tau, Test_Math) {
+	cv::Point2f nodal(7,7);
+	cv::Point2f origin(0,0);
+	cv::Point2f final(5,6);
+	float time = 1.0;
+
 	FlowPoint test_point(origin,final,time);
 
 	FlowPoint actual(origin,test_point.magnitude);
@@ -34,4 +53,4 @@ TEST(Tau, Test_Math) {
 
 	ASSERT_EQ(tau,test_tau.tau);
 
-}
+}*/
