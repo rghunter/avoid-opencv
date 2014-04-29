@@ -17,15 +17,21 @@ TEST(Tau, Test_Constructor) {
 }
 
 TEST(Tau, Test_Math) {
-	cv::Point2f nodal(10,10);
+	cv::Point2f nodal(7,7);
 	cv::Point2f origin(0,0);
-	cv::Point2f final(5,5);
-
+	cv::Point2f final(5,6);
 	float time = 1.0;
 
 	FlowPoint test_point(origin,final,time);
-	Tau test_tau(test_point,nodal);
 
-	ASSERT_EQ(cv::norm(test_point.magnitude),test_tau.tau);
+	FlowPoint actual(origin,test_point.magnitude);
+	Tau test_tau(actual,nodal);
+
+	float dist1 = cv::norm(nodal-origin);
+	float dist2 = cv::norm(final-nodal);
+
+	float tau = dist2/abs((dist2-dist1)/time);
+
+	ASSERT_EQ(tau,test_tau.tau);
 
 }
